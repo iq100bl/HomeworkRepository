@@ -4,41 +4,6 @@ namespace Candelader_v2
 {
     class Program
     {
-
-        static void Daily(DayOfWeek y)
-        {
-            var now = DateTime.Now.DayOfWeek;
-            int weekend = DayOfWeek.Saturday - y;
-
-            if (weekend == 6 || weekend ==0)
-            {
-                
-                if (now == y)
-                {
-                    Console.WriteLine("your choice: {0}, weekday number: {1}, today is the day of your choice and weekend", y, (int)y);
-                }
-                else
-                {
-                    Console.WriteLine("your choice: {0}, weekday number: {1}, it's weekend", y, (int)y);
-                }
-
-            }
-            else
-            {
-                
-                if (now == y)
-                {
-                    Console.WriteLine("your choice: {0}, weekday number: {1}, untill weekend: {2} day(s),today is the day of your choice", y, (int)y, weekend);
-                }
-                else
-                {
-                    Console.WriteLine("your choice: {0}, weekday number: {1}, untill weekend: {2} day(s)", y, (int)y, weekend);
-                }
-
-            }
-
-            Console.ResetColor();
-        }
         static void Main(string[] args)
         {
             Console.WriteLine("Write day of the week");
@@ -86,6 +51,41 @@ namespace Candelader_v2
                     Console.WriteLine("This is not the day of the week");
                     break;
 
+            }
+
+            static void Daily(DayOfWeek y)
+            {
+                var now = DateTime.Now.DayOfWeek;
+                int weekend = DayOfWeek.Saturday - y;
+
+                if (weekend == 6 || weekend == 0)
+                {
+
+                    if (now == y)
+                    {
+                        Console.WriteLine("your choice: {0}, weekday number: {1}, today is the day of your choice and weekend", y, (int)y);
+                    }
+                    else
+                    {
+                        Console.WriteLine("your choice: {0}, weekday number: {1}, it's weekend", y, (int)y);
+                    }
+
+                }
+                else
+                {
+
+                    if (now == y)
+                    {
+                        Console.WriteLine("your choice: {0}, weekday number: {1}, untill weekend: {2} day(s),today is the day of your choice", y, (int)y, weekend);
+                    }
+                    else
+                    {
+                        Console.WriteLine("your choice: {0}, weekday number: {1}, untill weekend: {2} day(s)", y, (int)y, weekend);
+                    }
+
+                }
+
+                Console.ResetColor();
             }
         }
     }
