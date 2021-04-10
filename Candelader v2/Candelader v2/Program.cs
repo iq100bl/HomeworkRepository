@@ -4,88 +4,81 @@ namespace Candelader_v2
 {
     class Program
     {
-
-        static void Daily(DayOfWeek y)
-        {
-            var now = DateTime.Now.DayOfWeek;
-            int weekend = DayOfWeek.Saturday - y;
-
-            if (weekend == 6 || weekend ==0)
-            {
-                
-                if (now == y)
-                {
-                    Console.WriteLine("your choice: {0}, weekday number: {1}, today is the day of your choice and weekend", y, (int)y);
-                }
-                else
-                {
-                    Console.WriteLine("your choice: {0}, weekday number: {1}, it's weekend", y, (int)y);
-                }
-
-            }
-            else
-            {
-                
-                if (now == y)
-                {
-                    Console.WriteLine("your choice: {0}, weekday number: {1}, untill weekend: {2} day(s),today is the day of your choice", y, (int)y, weekend);
-                }
-                else
-                {
-                    Console.WriteLine("your choice: {0}, weekday number: {1}, untill weekend: {2} day(s)", y, (int)y, weekend);
-                }
-
-            }
-
-            Console.ResetColor();
-        }
         static void Main(string[] args)
         {
             Console.WriteLine("Write day of the week");
-            var y = DayOfWeek.Monday;
             int now = (int)DateTime.Now.DayOfWeek;
             String day = Console.ReadLine();
-            switch (day.ToLower())          //ToLower() для приведения в нижний регистр всего введённого текста
+            var colorDay = ConsoleColor.Red;
+            switch (day.ToLower())
             {
                 case "mon" or "monday":
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    y = DayOfWeek.Monday;
-                    Daily(y);
+                    colorDay = ConsoleColor.Red;
+                    EnteredDay(DayOfWeek.Monday, colorDay);
                     break;
                 case "tue" or "tuesday":
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    y = DayOfWeek.Tuesday;
-                    Daily(y);
+                    colorDay = ConsoleColor.Green;
+                    EnteredDay(DayOfWeek.Tuesday, colorDay);
                     break;
                 case "wed" or "wednesday":
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    y = DayOfWeek.Wednesday;
-                    Daily(y);
+                    colorDay = ConsoleColor.Yellow;
+                    EnteredDay(DayOfWeek.Wednesday, colorDay); ;
                     break;
                 case "thu" or "thursday":
-                    Console.ForegroundColor = ConsoleColor.Magenta;
-                    y = DayOfWeek.Thursday;
-                    Daily(y);
+                    colorDay = ConsoleColor.Magenta;
+                    EnteredDay(DayOfWeek.Thursday, colorDay); ;
                     break;
                 case "fri" or "friday":
-                    Console.ForegroundColor = ConsoleColor.DarkCyan;
-                    y = DayOfWeek.Friday;
-                    Daily(y);
+                    colorDay = ConsoleColor.DarkCyan;
+                    EnteredDay(DayOfWeek.Friday, colorDay);
                     break;
                 case "sat" or "saturday":
-                    Console.ForegroundColor = ConsoleColor.Blue;
-                    y = DayOfWeek.Saturday;
-                    Daily(y);
+                    colorDay = ConsoleColor.Blue;
+                    EnteredDay(DayOfWeek.Saturday, colorDay);
                     break;
                 case "sun" or "sunday":
-                    Console.ForegroundColor = ConsoleColor.DarkYellow;
-                    y = DayOfWeek.Sunday;
-                    Daily(y);
+                    colorDay = ConsoleColor.DarkYellow;
+                    EnteredDay(DayOfWeek.Sunday, colorDay);
                     break;
                 default:
                     Console.WriteLine("This is not the day of the week");
                     break;
 
+            }
+
+            static void EnteredDay(DayOfWeek days, ConsoleColor colorDay)
+            {
+                var now = DateTime.Now.DayOfWeek;
+                int weekend = DayOfWeek.Saturday - days;
+                Console.ForegroundColor = colorDay;
+                if (weekend == 6 || weekend == 0)
+                {
+
+                    if (now == days)
+                    {
+                        Console.WriteLine("your choice: {0}, weekday number: {1}, it's weekend", days, (int)days);
+                    }
+                    else
+                    {
+                        Console.WriteLine("your choice: {0}, weekday number: {1}, today is the day of your choice and weekend", days, (int)days);
+                    }
+
+                }
+                else
+                {
+
+                    if (now == days)
+                    {
+                        Console.WriteLine("your choice: {0}, weekday number: {1}, untill weekend: {2} day(s),today is the day of your choice", days, (int)days, weekend);
+                    }
+                    else
+                    {
+                        Console.WriteLine("your choice: {0}, weekday number: {1}, untill weekend: {2} day(s)", days, (int)days, weekend);
+                    }
+
+                }
+
+                Console.ResetColor();
             }
         }
     }
