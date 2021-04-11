@@ -15,7 +15,7 @@ namespace string3
                 Console.Write(text[i] + " ");
                 i++;
             }
-            while (i <= text.Length-1);
+            while (i < text.Length);
         }
     }
 }
