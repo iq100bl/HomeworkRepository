@@ -9,7 +9,7 @@ namespace string2
             Console.WriteLine("Entered text");
             var text = Console.ReadLine();
             int size = 0;
-            while (size <= text.Length - 1)
+            while (size < text.Length )
             {
                 size++;
             }
