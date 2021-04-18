@@ -6,9 +6,7 @@ namespace Diary
         private static readonly DiaryService service = new();
         static void Main(string[] args)
         {
-            
             var numberTask = 0;
-            PriorityTask[] weeklyTasks = new PriorityTask[100];
             while (true)
             {
                 Console.Write("Enter action: ");
@@ -17,16 +15,16 @@ namespace Diary
                 switch (text.ToLower())
                 {
                     case "task":
-                        numberTask = service.RecodrTask(numberTask, weeklyTasks);
+                        numberTask = DiaryService.RecodrTask(numberTask);
                         break;
                     case "show":
-                        service.ShowTasks(numberTask, weeklyTasks);
+                        service.ShowTasks(numberTask);
                         break;
                     case "filtr":
-                         service.FiltrTask(numberTask, weeklyTasks);
+                         service.FiltrTask(numberTask);
                         break;
                     case "change":
-                        service.ChangeParametrs(weeklyTasks);
+                        service.ChangeParametrs();
                         break;
                 }
             }

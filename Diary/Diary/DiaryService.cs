@@ -8,14 +8,61 @@ namespace Diary
 {
     internal class DiaryService
     {
-        internal int RecodrTask(int numberTask, PriorityTask[] weeklyTasks)
+        static readonly PriorityTask[] weeklyTasks = new PriorityTask[100];
+        internal static int RecodrTask(int numberTask)
         {
             Console.WriteLine("Entered task parametrs: ");
             var taskParametrs = AddTask();
-            CheckParametrs(taskParametrs, numberTask, weeklyTasks);
+            CheckParametrs(taskParametrs, numberTask);
             numberTask++;
             return numberTask;
         }
+
+        internal void ShowTasks(int numberTask)
+        {
+            Console.WriteLine("Your entries: ");
+            for (int i = 1; i < numberTask + 1; i++)
+            {
+                Console.WriteLine("task " + i + ": "
+                                   + weeklyTasks[i - 1].name
+                                   + " "
+                                   + CheckData(i)
+                                   + " "
+                                   + CheckTime(i)
+                                   + " "
+                                   + weeklyTasks[i - 1].priority);
+            }
+        }
+
+        internal void FiltrTask(int numberTask)
+        {
+            Console.Write("By date or by priority?");
+            string filtr = Console.ReadLine();
+
+            switch (filtr.ToLower())
+            {
+                case "date":
+                    FiltrToDate(numberTask);
+                    break;
+
+                case "priority":
+                    FiltrToPriority(numberTask);
+                    break;
+
+                default:
+                    Console.WriteLine("so something went wrong");
+                    break;
+            }
+        }
+
+        internal void ChangeParametrs()
+        {
+            int numberTaskChange = SelectNumberTask();
+            Console.WriteLine("enter new parameters");
+            var taskParametrs = AddTask();
+            CheckParametrs(taskParametrs, numberTaskChange);
+        }
+
         private static string[] AddTask()
         {
             {
@@ -24,24 +71,24 @@ namespace Diary
                 return words;
             }
         }
-        private static void CheckParametrs(string[] taskParametrs, int numberTask, PriorityTask[] weeklyTasks)
+        private static void CheckParametrs(string[] taskParametrs, int numberTask)
         {
             switch (taskParametrs.Length)
             {
                 case 4:
-                    Record4Parametrs(taskParametrs, numberTask, weeklyTasks);
+                    Record4Parametrs(taskParametrs, numberTask);
                     break;
 
                 case 3:
-                    Records3Parametrs(taskParametrs, numberTask, weeklyTasks);
+                    Records3Parametrs(taskParametrs, numberTask);
                     break;
 
                 case 2:
-                    Records2Parametrs(taskParametrs, numberTask, weeklyTasks);
+                    Records2Parametrs(taskParametrs, numberTask);
                     break;
 
                 case 1:
-                    Records1Parametr(taskParametrs, numberTask, weeklyTasks);
+                    Records1Parametr(taskParametrs, numberTask);
                     break;
 
                 default:
@@ -50,13 +97,13 @@ namespace Diary
             }
         }
 
-        private static void Records1Parametr(string[] taskParametrs, int numberTask, PriorityTask[] weeklyTasks)
+        private static void Records1Parametr(string[] taskParametrs, int numberTask)
         {
             PriorityTask diaryTask = new(taskParametrs[0]);
             weeklyTasks[numberTask] = diaryTask;
         }
 
-        private static void Records2Parametrs(string[] taskParametrs, int numberTask, PriorityTask[] weeklyTasks)
+        private static void Records2Parametrs(string[] taskParametrs, int numberTask)
         {
             PriorityTask diaryTask = new(taskParametrs[0],
                                                    (taskParametrs[1]));
@@ -64,7 +111,7 @@ namespace Diary
 
         }
 
-        private static void Records3Parametrs(string[] taskParametrs, int numberTask, PriorityTask[] weeklyTasks)
+        private static void Records3Parametrs(string[] taskParametrs, int numberTask)
         {
             PriorityTask diaryTask = new(taskParametrs[0],
                                                       DateTime.Parse(taskParametrs[1]),
@@ -73,7 +120,7 @@ namespace Diary
             diaryTask.GetAlarm();
         }
 
-        private static void Record4Parametrs(string[] taskParametrs, int numberTask, PriorityTask[] weeklyTasks)
+        private static void Record4Parametrs(string[] taskParametrs, int numberTask)
         {
             PriorityTask diaryTask = new(taskParametrs[0],
                                                                           DateTime.Parse(taskParametrs[1]),
@@ -83,23 +130,8 @@ namespace Diary
             diaryTask.GetAlarm();
         }
 
-        internal void ShowTasks(int numberTask, PriorityTask[] weeklyTasks)
-        {
-            Console.WriteLine("Your entries: ");
-            for (int i = 1; i < numberTask + 1; i++)
-            {
-                Console.WriteLine("task " + i + ": "
-                                   + weeklyTasks[i - 1].name
-                                   + " "
-                                   + CheckData(weeklyTasks, i)
-                                   + " "
-                                   + CheckTime(weeklyTasks, i)
-                                   + " "
-                                   + weeklyTasks[i - 1].priority);
-            }
-        }
 
-        private static string CheckTime(PriorityTask[] weeklyTasks, int i)
+        private static string CheckTime(int i)
         {
             if (weeklyTasks[i - 1].timeTask == default(DateTime))
             {
@@ -108,7 +140,7 @@ namespace Diary
             return weeklyTasks[i - 1].timeTask.ToLongTimeString();
         }
 
-        private static string CheckData(PriorityTask[] weeklyTasks, int i)
+        private static string CheckData(int i)
         {
             if (weeklyTasks[i - 1].dataTask == default(DateTime))
             {
@@ -117,28 +149,8 @@ namespace Diary
             return weeklyTasks[i - 1].dataTask.ToShortDateString();
         }
 
-        internal void FiltrTask(int numberTask, PriorityTask[] weeklyTasks)
-        {
-            Console.Write("By date or by priority?");
-            string filtr = Console.ReadLine();
 
-            switch (filtr.ToLower())
-            {
-                case "date":
-                    FiltrToDate(weeklyTasks, numberTask);
-                    break;
-
-                case "prioryity":
-                    FiltrToPriority(weeklyTasks, numberTask);
-                    break;
-
-                default:
-                    Console.WriteLine("so something went wrong");
-                    break;
-            }
-        }
-
-        private void FiltrToPriority(PriorityTask[] weeklyTasks, int numberTask)
+        private void FiltrToPriority(int numberTask)
         {
             Console.WriteLine("select priority");
             string filtr = Console.ReadLine();
@@ -158,10 +170,10 @@ namespace Diary
             while (i < numberTask);
 
             Console.WriteLine("tasks with the selected priority:");
-            ShowTasks(x, filtrTask);
+            ShowFiltr(x, filtrTask);
         }
-
-        private void FiltrToDate(PriorityTask[] weeklyTasks, int numberTask) // я знаю код повторяется, но у меня не получается вытянуть из weeklyTasks[i].dataTask параметр для метода
+               
+        private void FiltrToDate(int numberTask)
         {
             Console.WriteLine("select a date");
             string filtr = Console.ReadLine();
@@ -179,15 +191,22 @@ namespace Diary
             }
             while (i < numberTask);
             Console.WriteLine("tasks with the selected data:");
-            ShowTasks(x, filtrTask);
+            ShowFiltr(x, filtrTask);
         }
-
-        internal void ChangeParametrs(PriorityTask[] weeklyTasks)
+        private static void ShowFiltr(int x, PriorityTask[] filtrTask)
         {
-            int numberTaskChange = SelectNumberTask();
-            Console.WriteLine("enter new parameters");
-            var taskParametrs = AddTask();
-            CheckParametrs(taskParametrs, numberTaskChange, weeklyTasks);
+            Console.WriteLine("Your entries: ");
+            for (int i = 1; i < x + 1; i++)
+            {
+                Console.WriteLine("task " + i + ": "
+                                   + filtrTask[x - 1].name
+                                   + " "
+                                   + CheckData(x)
+                                   + " "
+                                   + CheckTime(x)
+                                   + " "
+                                   + filtrTask[x - 1].priority);
+            }
         }
 
         private static int SelectNumberTask()

@@ -36,6 +36,11 @@ namespace Diary
             TimeSpan before = dataTask - DateTime.Now;
             int days = (int)before.TotalDays;
 
+            return ToString(days);
+        }
+
+        private static string Totring(int days)
+        {
             if (days > 0)
             {
                 Console.WriteLine(" before the task :" + days);
@@ -45,6 +50,14 @@ namespace Diary
             {
                 Console.WriteLine("task day has already passed");
                 return null;
+            }
+        }
+
+        public override string ToString()
+        {
+            return base.ToString();
+            {
+
             }
         }
     }
