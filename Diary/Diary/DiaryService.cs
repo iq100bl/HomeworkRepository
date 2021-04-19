@@ -37,7 +37,7 @@ namespace Diary
         internal void FilterTask(int taskNumber)
         {
             Console.Write("By date or by priority?");
-            string filtr = Console.ReadLine();
+            string filter = Console.ReadLine();
 
             switch (filtr.ToLower())
             {
