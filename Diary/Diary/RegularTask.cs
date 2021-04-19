@@ -8,18 +8,39 @@ namespace Diary
 {
     internal class RegularTask : WeeklyTask
     {
-        internal DateTime dataTask;
-        internal DateTime timeTask;
+        private DateTime taskDate;
+        private DateTime taskTime;
+        public string TaskDate
+        {
+            get
+            {
+                if (taskDate == default(DateTime))
+                {
+                    return " ";
+                }
+                return taskDate.ToShortDateString();
+            }
+        }
+        public string TaskTime
+        {
+            get
+            {
+                if (taskTime == default(DateTime))
+                {
+                    return " ";
+                }
+                return taskTime.ToLongTimeString();
+            }
+        }
+
         internal RegularTask(string _name) : base(_name)
         {
-            name = _name;
         }
-        internal RegularTask(string _name, DateTime _dataTask, DateTime _timeTask) :base(_name)
+
+        internal RegularTask(string _name, DateTime _dataTask, DateTime _timeTask) : base(_name)
         {
-            name = _name;
-            dataTask = _dataTask;
-            timeTask = _timeTask;
         }
+
         internal override string GetAlarm()
         {
             return ToString();

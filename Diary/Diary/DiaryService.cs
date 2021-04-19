@@ -9,32 +9,33 @@ namespace Diary
     internal class DiaryService
     {
         static readonly PriorityTask[] weeklyTasks = new PriorityTask[100];
-        internal static int RecodrTask(int numberTask)
+        int taskNumber = 0;
+        internal int RecodrTask()
         {
             Console.WriteLine("Entered task parametrs: ");
             var taskParametrs = AddTask();
-            CheckParametrs(taskParametrs, numberTask);
-            numberTask++;
-            return numberTask;
+            CheckParametrs(taskParametrs, taskNumber);
+            taskNumber++;
+            return taskNumber;
         }
 
-        internal void ShowTasks(int numberTask)
+        internal void ShowTasks()
         {
             Console.WriteLine("Your entries: ");
-            for (int i = 1; i < numberTask + 1; i++)
+            for (int i = 0; i < taskNumber + 1; i++)
             {
-                Console.WriteLine("task " + i + ": "
-                                   + weeklyTasks[i - 1].name
+                Console.WriteLine("task " + (i + 1) + ": "
+                                   + weeklyTasks[i].Name
                                    + " "
-                                   + CheckData(i)
+                                   + weeklyTasks[i].TaskDate
                                    + " "
-                                   + CheckTime(i)
+                                   + weeklyTasks[i].TaskTime
                                    + " "
-                                   + weeklyTasks[i - 1].priority);
+                                   + weeklyTasks[i].Priority);
             }
         }
 
-        internal void FiltrTask(int numberTask)
+        internal void FiltrTask()
         {
             Console.Write("By date or by priority?");
             string filtr = Console.ReadLine();
@@ -42,11 +43,11 @@ namespace Diary
             switch (filtr.ToLower())
             {
                 case "date":
-                    FiltrToDate(numberTask);
+                    FiltrToDate(taskNumber);
                     break;
 
                 case "priority":
-                    FiltrToPriority(numberTask);
+                    FiltrToPriority(taskNumber);
                     break;
 
                 default:
@@ -130,26 +131,6 @@ namespace Diary
             diaryTask.GetAlarm();
         }
 
-
-        private static string CheckTime(int i)
-        {
-            if (weeklyTasks[i - 1].timeTask == default(DateTime))
-            {
-                return " ";
-            }
-            return weeklyTasks[i - 1].timeTask.ToLongTimeString();
-        }
-
-        private static string CheckData(int i)
-        {
-            if (weeklyTasks[i - 1].dataTask == default(DateTime))
-            {
-                return " ";
-            }
-            return weeklyTasks[i - 1].dataTask.ToShortDateString();
-        }
-
-
         private void FiltrToPriority(int numberTask)
         {
             Console.WriteLine("select priority");
@@ -160,7 +141,7 @@ namespace Diary
 
             do
             {
-                if (weeklyTasks[i].priority == filtr)
+                if (weeklyTasks[i].Priority == filtr)
                 {
                     filtrTask[x] = weeklyTasks[i];
                     x++;
@@ -182,7 +163,7 @@ namespace Diary
             var x = 0;
             do
             {
-                if (weeklyTasks[i].dataTask == DateTime.Parse(filtr))
+                if (weeklyTasks[i].TaskDate == filtr)
                 {
                     filtrTask[x] = weeklyTasks[i];
                     x++;
@@ -199,13 +180,13 @@ namespace Diary
             for (int i = 1; i < x + 1; i++)
             {
                 Console.WriteLine("task " + i + ": "
-                                   + filtrTask[x - 1].name
+                                   + filtrTask[x - 1].Name
                                    + " "
-                                   + CheckData(x)
+                                   + filtrTask[x - 1].TaskDate
                                    + " "
-                                   + CheckTime(x)
+                                   + filtrTask[x - 1].TaskTime
                                    + " "
-                                   + filtrTask[x - 1].priority);
+                                   + filtrTask[x - 1].Priority);
             }
         }
 

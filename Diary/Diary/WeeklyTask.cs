@@ -8,7 +8,14 @@ namespace Diary
 {
     abstract public class WeeklyTask
     {
-        internal string name;
+        private string name;
+        public string Name
+        {
+            get
+            {
+                return name;
+            }
+        }
         internal abstract string GetAlarm();
         internal WeeklyTask(string name)
         {
