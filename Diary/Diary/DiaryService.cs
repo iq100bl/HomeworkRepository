@@ -8,8 +8,8 @@ namespace Diary
 {
     internal class DiaryService
     {
-        static readonly PriorityTask[] weeklyTasks = new PriorityTask[100];
-        int taskNumber = 0;
+        private static readonly PriorityTask[] weeklyTasks = new PriorityTask[100];
+        private int taskNumber;
         internal int RecodrTask()
         {
             Console.WriteLine("Entered task parametrs: ");
@@ -40,7 +40,7 @@ namespace Diary
             Console.Write("By date or by priority?");
             string filter = Console.ReadLine();
 
-            switch (filtr.ToLower())
+            switch (filter.ToLower())
             {
                 case "date":
                     FiltrToDate(taskNumber);
@@ -107,7 +107,7 @@ namespace Diary
         private static void Records2Parametrs(string[] taskParametrs, int numberTask)
         {
             PriorityTask diaryTask = new(taskParametrs[0],
-                                                   (taskParametrs[1]));
+                                                   taskParametrs[1]);
             weeklyTasks[numberTask] = diaryTask;
 
         }
@@ -135,7 +135,7 @@ namespace Diary
         {
             Console.WriteLine("select priority");
             string filtr = Console.ReadLine();
-            PriorityTask[] filtrTask = new PriorityTask[numberTask];
+            var filtrTask = new PriorityTask[numberTask];
             var i = 0;
             var x = 0;
 
@@ -158,7 +158,7 @@ namespace Diary
         {
             Console.WriteLine("select a date");
             string filtr = Console.ReadLine();
-            PriorityTask[] filtrTask = new PriorityTask[numberTask];
+            var filtrTask = new PriorityTask[numberTask];
             var i = 0;
             var x = 0;
             do
