@@ -42,7 +42,7 @@ namespace Diary
             switch (filtr.ToLower())
             {
                 case "date":
-                    FiltrToDate(numberTask);
+                    FlterByDate(numberTask);
                     break;
 
                 case "priority":
