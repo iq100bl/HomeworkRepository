@@ -34,7 +34,7 @@ namespace Diary
             }
         }
 
-        internal void FiltrTask(int numberTask)
+        internal void FilterTask(int taskNumber)
         {
             Console.Write("By date or by priority?");
             string filtr = Console.ReadLine();
