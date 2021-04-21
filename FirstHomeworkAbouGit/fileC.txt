@@ -1,4 +1,0 @@
-
-feature 4 better than feature 5
-feature 4 is better that feature 3
-
