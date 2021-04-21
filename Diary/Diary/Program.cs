@@ -4,12 +4,14 @@ namespace Diary
      class Program
     {
         private static readonly DiaryService service = new();
+        public delegate void Reading();
+        public Reading reading = ConsoleReadWrite.ReadingInfo();
         static void Main(string[] args)
         {
             while (true)
             {
                 Console.Write("Enter action: ");
-                var text = Console.ReadLine();
+                string text = ();
 
                 switch (text.ToLower())
                 {
