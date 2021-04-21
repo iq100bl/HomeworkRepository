@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Diary
 {
-    internal class PriorityTask : RegularTask
+    internal class PriorityTask : RegularTask,IPriorityTask
     {
         private readonly string priority;
        

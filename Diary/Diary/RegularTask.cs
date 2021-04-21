@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Diary
 {
-    internal class RegularTask : WeeklyTask
+    internal class RegularTask : WeeklyTask,IRegularTask
     {
         private readonly DateTime taskDate;
         private readonly DateTime taskTime;

@@ -12,5 +12,9 @@ namespace Diary
         {
             Console.WriteLine($"Task {numberTaskChange} has been updated");
         }
+        internal static string ReadingInfo()
+        {
+            return Console.ReadLine();
+        }
     }
 }

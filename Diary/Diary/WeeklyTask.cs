@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Diary
 {
-    abstract public class WeeklyTask
+    abstract public class WeeklyTask :IWeeklyTask
     {
         private readonly string name;
 
