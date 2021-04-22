@@ -6,19 +6,22 @@ using System.Threading.Tasks;
 
 namespace Diary
 {
-    abstract public class WeeklyTask
+    abstract public class WeeklyTask :IWeeklyTask
     {
-        private string name;
-        public string Name
+        private readonly string name;
+
+        public string GetName()
         {
-            get
-            {
-                return name;
-            }
+            return name;
         }
         internal abstract string GetAlarm();
-        internal WeeklyTask(string name)
+        internal WeeklyTask(string _name)
         {
-        }        
+            name = _name;
+        }
+        public virtual string TaskTostring(int i)
+        {
+            return  $"task {i + 1} { name} ";
+        }
     }
 }

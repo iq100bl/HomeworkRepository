@@ -3,13 +3,13 @@ namespace Diary
 {
      class Program
     {
-        private static readonly DiaryService service = new();
+        private static readonly DiaryService service = new();        
         static void Main(string[] args)
         {
             while (true)
             {
                 Console.Write("Enter action: ");
-                var text = Console.ReadLine();
+                string text = Console.ReadLine();
 
                 switch (text.ToLower())
                 {

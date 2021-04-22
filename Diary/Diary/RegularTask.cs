@@ -6,32 +6,10 @@ using System.Threading.Tasks;
 
 namespace Diary
 {
-    internal class RegularTask : WeeklyTask
+    internal class RegularTask : WeeklyTask,IRegularTask
     {
-        private DateTime taskDate;
-        private DateTime taskTime;
-        public string TaskDate
-        {
-            get
-            {
-                if (taskDate == default(DateTime))
-                {
-                    return " ";
-                }
-                return taskDate.ToShortDateString();
-            }
-        }
-        public string TaskTime
-        {
-            get
-            {
-                if (taskTime == default(DateTime))
-                {
-                    return " ";
-                }
-                return taskTime.ToLongTimeString();
-            }
-        }
+        private readonly DateTime taskDate;
+        private readonly DateTime taskTime;
 
         internal RegularTask(string _name) : base(_name)
         {
@@ -39,11 +17,35 @@ namespace Diary
 
         internal RegularTask(string _name, DateTime _dataTask, DateTime _timeTask) : base(_name)
         {
+            taskDate = _dataTask;
+            taskTime = _timeTask;
+        }
+        public DateTime GetDate()
+        {
+            return taskDate;
+        }
+        public DateTime GetTime()
+        {
+            return taskTime;
         }
 
         internal override string GetAlarm()
         {
             return ToString();
+        }
+        public override string TaskTostring(int i)
+        {
+            var output = base.TaskTostring(i);
+            if (taskDate != default)
+            {
+                output += $"{taskDate.ToShortDateString()} ";
+            }
+
+            if (taskTime != default)
+            {
+                output += $"{taskTime.ToLongTimeString()} ";
+            }
+            return output;
         }
     }
 }

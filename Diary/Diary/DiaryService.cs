@@ -8,8 +8,13 @@ namespace Diary
 {
     internal class DiaryService
     {
-        private static readonly PriorityTask[] weeklyTasks = new PriorityTask[100];
+        private static readonly WeeklyTask[] weeklyTasks = new WeeklyTask[100];
         private int taskNumber;
+        internal delegate void TaskPrint();
+        public delegate void UpdateTask(int numberTaskChange);
+        delegate string ReadInput();
+
+        private ReadInput readingInfo = ConsoleReadWrite.ReadingInfo;
         internal int RecodrTask()
         {
             Console.WriteLine("Entered task parametrs: ");
@@ -22,23 +27,16 @@ namespace Diary
         internal void ShowTasks()
         {
             Console.WriteLine("Your entries: ");
-            for (int i = 0; i < taskNumber + 1; i++)
+            for (int i = 0; i < taskNumber; i++)
             {
-                Console.WriteLine("task " + (i + 1) + ": "
-                                   + weeklyTasks[i].Name
-                                   + " "
-                                   + weeklyTasks[i].TaskDate
-                                   + " "
-                                   + weeklyTasks[i].TaskTime
-                                   + " "
-                                   + weeklyTasks[i].Priority);
+                Console.WriteLine(weeklyTasks[i].TaskTostring(i));
             }
         }
 
         internal void FiltrTask()
         {
             Console.Write("By date or by priority?");
-            string filter = Console.ReadLine();
+            string filter = readingInfo();
 
             switch (filter.ToLower())
             {
@@ -58,15 +56,18 @@ namespace Diary
 
         internal void ChangeParametrs()
         {
-            int numberTaskChange = SelectNumberTask();
             Console.WriteLine("enter new parameters");
             var taskParametrs = AddTask();
+            int numberTaskChange = SelectNumberTask();
             CheckParametrs(taskParametrs, numberTaskChange);
+            UpdateTask update = ConsoleReadWrite.PrintNumberUpdateTask;
+            update(numberTaskChange);
         }
 
         private static string[] AddTask()
         {
             {
+                // Я не могу в этом месте использовать метод через делегат, его не видно
                 string text = Console.ReadLine();
                 string[] words = text.Split(new char[] { ',' });
                 return words;
@@ -100,7 +101,7 @@ namespace Diary
 
         private static void Records1Parametr(string[] taskParametrs, int numberTask)
         {
-            PriorityTask diaryTask = new(taskParametrs[0]);
+            RegularTask diaryTask = new(taskParametrs[0]);
             weeklyTasks[numberTask] = diaryTask;
         }
 
@@ -114,8 +115,8 @@ namespace Diary
 
         private static void Records3Parametrs(string[] taskParametrs, int numberTask)
         {
-            PriorityTask diaryTask = new(taskParametrs[0],
-                                                      DateTime.Parse(taskParametrs[1]),
+            RegularTask diaryTask = new(taskParametrs[0],
+                                                     DateTime.Parse(taskParametrs[1]),
                                                       DateTime.Parse(taskParametrs[2]));
             weeklyTasks[numberTask] = diaryTask;
             diaryTask.GetAlarm();
@@ -134,14 +135,14 @@ namespace Diary
         private void FiltrToPriority(int numberTask)
         {
             Console.WriteLine("select priority");
-            string filtr = Console.ReadLine();
-            var filtrTask = new PriorityTask[numberTask];
+            string filtr = readingInfo();
+            var filtrTask = new WeeklyTask[numberTask];
             var i = 0;
             var x = 0;
 
             do
             {
-                if (weeklyTasks[i].Priority == filtr)
+                if (weeklyTasks[i] is PriorityTask priorityTask && ((IPriorityTask)priorityTask).GetPriority() == filtr)
                 {
                     filtrTask[x] = weeklyTasks[i];
                     x++;
@@ -157,36 +158,29 @@ namespace Diary
         private void FiltrToDate(int numberTask)
         {
             Console.WriteLine("select a date");
-            string filtr = Console.ReadLine();
-            var filtrTask = new PriorityTask[numberTask];
+            string filtr = readingInfo();
+            var filtrTask = new WeeklyTask[numberTask];
             var i = 0;
             var x = 0;
             do
             {
-                if (weeklyTasks[i].TaskDate == filtr)
+                if (weeklyTasks[i] is RegularTask regularTask && ((IRegularTask)regularTask).GetDate() >= DateTime.Parse(filtr))
                 {
                     filtrTask[x] = weeklyTasks[i];
                     x++;
                 }
-                i++;
+                i++ ;
             }
             while (i < numberTask);
             Console.WriteLine("tasks with the selected data:");
             ShowFiltr(x, filtrTask);
         }
-        private static void ShowFiltr(int x, PriorityTask[] filtrTask)
+        private static void ShowFiltr(int x, WeeklyTask[] filtrTask)
         {
-            Console.WriteLine("Your entries: ");
-            for (int i = 1; i < x + 1; i++)
+            for (int i = 0; i < x; i++)
             {
-                Console.WriteLine("task " + i + ": "
-                                   + filtrTask[x - 1].Name
-                                   + " "
-                                   + filtrTask[x - 1].TaskDate
-                                   + " "
-                                   + filtrTask[x - 1].TaskTime
-                                   + " "
-                                   + filtrTask[x - 1].Priority);
+                // filterTask является строковым массивом, я не нашёл как обратиться через интерфейс
+                Console.WriteLine(filtrTask[i].TaskTostring(i));
             }
         }
 
