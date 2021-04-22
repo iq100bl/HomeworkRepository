@@ -1,9 +1,12 @@
 ﻿using System;
+using BankLibrary;
 
 namespace BankApplication
 {
     class Program
     {
+        private static Bank<Account> _bank = new Bank<Account>();
+        
         static void Main(string[] args)
         {
             bool alive = true;
@@ -58,8 +61,14 @@ namespace BankApplication
             decimal sum = Convert.ToDecimal(Console.ReadLine());
 
             Console.WriteLine("Select an account type: \n 1. On-Demand \n 2. Deposit");
-            // var type = Enum.Parse<>(Console.ReadLine()!);
-            // handle open
+            var type = Enum.Parse<AccountType>(Console.ReadLine()!);
+            
+            _bank.OpenAccount(new OpenAccountParameters
+            {
+                Amount = sum,
+                Type = type,
+                AccountCreated = NotifyAccountCreated
+            });
         }
 
         private static void Withdraw()
@@ -80,7 +89,7 @@ namespace BankApplication
 
             Console.WriteLine("Enter account id: ");
             int id = Convert.ToInt32(Console.ReadLine());
-
+            
             // Put
         }
         
@@ -88,8 +97,17 @@ namespace BankApplication
         {
             Console.WriteLine("Enter the account id to close: ");
             int id = Convert.ToInt32(Console.ReadLine());
-
+            _bank.ClosedAccount(new ClosedAccountParameters
+            {
+                Id = id - 1,
+                AccountCloser = NotifyAccountCreated
+            });
             // Close
+        }
+
+        private static void NotifyAccountCreated(string message)
+        {
+            Console.WriteLine(message);
         }
     }
 }
