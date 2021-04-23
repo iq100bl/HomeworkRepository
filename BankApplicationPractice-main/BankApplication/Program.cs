@@ -43,6 +43,7 @@ namespace BankApplication
                             alive = false;
                             continue;
                     }
+                    Console.ReadKey();
                     // CalculatePercentage
                 }
                 catch (Exception ex)
@@ -79,6 +80,12 @@ namespace BankApplication
             Console.WriteLine("Enter account id: ");
             int id = Convert.ToInt32(Console.ReadLine());
 
+            _bank.WithdrawAccaunt(new WithdrawAccountParametrs
+            {
+                Amount = sum,
+                Id = id - 1,
+                WithdrawAccount = NotifyAccountCreated,
+            });
             // Withdraw;
         }
 
@@ -89,7 +96,13 @@ namespace BankApplication
 
             Console.WriteLine("Enter account id: ");
             int id = Convert.ToInt32(Console.ReadLine());
-            
+
+            _bank.PutAmount(new PutAccountParameters
+            {
+                Amount = sum,
+                Id = id - 1,
+                PutAccount = NotifyAccountCreated                
+            });
             // Put
         }
         

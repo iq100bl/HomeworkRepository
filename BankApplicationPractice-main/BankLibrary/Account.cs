@@ -3,6 +3,7 @@
 namespace BankLibrary
 {
     public delegate void AccountCreated(string message);
+    public delegate void AccountAction();
     
     public abstract class Account
     {
@@ -40,8 +41,9 @@ namespace BankLibrary
         public virtual void Put(decimal amount)
         {
             AssertValidState(AccountState.Opened);
-
             _amount += amount;
+            IncrementDays();
+            Created?.Invoke("Amount of money replenished.");
         }
         
         public virtual void Withdraw(decimal amount)
@@ -54,6 +56,8 @@ namespace BankLibrary
             }
 
             _amount -= amount;
+            IncrementDays();
+            Created?.Invoke($"You have withdrawn an amount of {amount}. on your account {_amount}");
         }
         
         public abstract AccountType Type { get; }
@@ -66,8 +70,8 @@ namespace BankLibrary
             }
         }
 
-        protected int Days => _days;
-        public int Id => _id;
+        internal int Days => _days;
+        internal int Id => _id;
 
         public void IncrementDays()
         {
