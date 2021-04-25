@@ -38,6 +38,7 @@ namespace BankApplication
                             CloseAccount();
                             break;
                         case 5:
+                            SkipDay();
                             break;
                         case 6:
                             alive = false;
@@ -45,6 +46,7 @@ namespace BankApplication
                     }
                     Console.ReadKey();
                     // CalculatePercentage
+
                 }
                 catch (Exception ex)
                 {
@@ -116,6 +118,11 @@ namespace BankApplication
                 AccountCloser = NotifyAccountCreated
             });
             // Close
+        }
+
+        private static void SkipDay()
+        {
+            _bank.SkipDay(new SkipDayAccountParameters { });
         }
 
         private static void NotifyAccountCreated(string message)

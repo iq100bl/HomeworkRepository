@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace BankLibrary
 {
@@ -15,7 +15,7 @@ namespace BankLibrary
         {
             if (Days / 30 == 0)
             {
-                throw new InvalidOperationException("Cannot withdraw money.");
+                throw new InvalidOperationException($"Cannot withdraw money. Нou can withdraw money through {30 - Days} day(s)");
             }
             
             base.Withdraw(amount);

@@ -5,58 +5,70 @@ namespace BankLibrary
 {
     public class Bank<T> where T : Account
     {
-        private readonly List<Account> _accounts = new();
-        AccountAction accountAction;
+        private readonly List<T> _accounts = new();
 
         public void OpenAccount(OpenAccountParameters parameters)
         {
-            // TODO: check types compatibility
-            CreateAccount(parameters.AccountCreated, () => parameters.Type == AccountType.Deposit 
-                ? new DepositAccount(parameters.Amount) as T
-                : new OnDemandAccount(parameters.Amount) as T);
-        }
-        public void ClosedAccount(ClosedAccountParameters parameters)
-        {// в этом месте хотел создать метод, для повтроряющегося кода, но не знаю как передать
-         //   "parametrs в метод
-            if (parameters.Id < 0 || parameters.Id >= _accounts.Count)
-            {
-                throw new InvalidOperationException("An account with this number does not exist");
+            if (GetType().GetGenericArguments()[0] == typeof(DepositAccount))
+            {if(parameters.Type == AccountType.OnDemand)
+                {
+                    throw new InvalidOperationException("Sorry, this is a credit bank, you cannot create an on demand account");
+                }
+                CreateAccount(parameters.AccountCreated, () => new DepositAccount(parameters.Amount) as T);
             }
-            var account = _accounts[parameters.Id];
-            account.Close();
-            _accounts.Insert(parameters.Id, account);
-            //IdentificationAccount(action,account, parameters)
+            else
+            {
+                // TODO: check types compatibility
+                CreateAccount(parameters.AccountCreated, () => parameters.Type == AccountType.Deposit
+                    ? new DepositAccount(parameters.Amount) as T
+                    : new OnDemandAccount(parameters.Amount) as T);
+            }
         }
-       // private void IdentificationAccount( AccountAction action, Account account, parameters) этот метод
+
+        public void ClosedAccount(ClosedAccountParameters parameters)
+        {
+            ExecuteOnAccount(parameters.AccountCloser, parameters.Id, acc => acc.Close());          
+        }       
+
         public void PutAmount(PutAccountParameters parameters)
         {
-            if (parameters.Id < 0 || parameters.Id >= _accounts.Count)
-            {
-                throw new InvalidOperationException("An account with this number does not exist");
-            }
-            var account = _accounts[parameters.Id];
-            account.Put(parameters.Amount);
-            _accounts.Insert(parameters.Id, account);
+            ExecuteOnAccount(parameters.PutAccount, parameters.Id, acc => acc.Put(parameters.Amount));
         }
+
         public void WithdrawAccaunt(WithdrawAccountParametrs parameters)
         {
-            var item = parameters.GetType();
-            CheckedItems(item);
-            if (parameters.Id < 0 || parameters.Id >= _accounts.Count)
+            ExecuteOnAccount(parameters.WithdrawAccount, parameters.Id, acc => acc.Withdraw(parameters.Amount));
+        }       
+
+        public void SkipDay(SkipDayAccountParameters parametrs)
+        {
+            CalculationPercent(_accounts);
+            if (_accounts.Count< 0)
+            {
+                throw new InvalidOperationException("Sorry, our bank has nothing to work with yet");
+            }
+            var acc = _accounts[0];
+            acc.Skip();
+            
+        }
+
+        private void AssertValidId(int Id)
+        {
+            if (Id < 0 || Id >= _accounts.Count)
             {
                 throw new InvalidOperationException("An account with this number does not exist");
             }
-            var account = _accounts[parameters.Id];
-            account.Withdraw(parameters.Amount);
-            _accounts.Insert(parameters.Id, account);
         }
-        public void CheckedItems(Type item)
+
+        private void ExecuteOnAccount(AccountCreated accountCreated, int accountId, Action<T> action)
         {
-            switch (item)
-            {
-               // case WithdrawAccountParametrs:
-                 //   break;
-            }
+            AssertValidId(accountId);
+            var account = _accounts[accountId];
+            action(account);
+            account.Created += accountCreated;
+            _accounts.RemoveAt(accountId);
+            _accounts.Insert(accountId, account);
+            CalculationPercent(_accounts);
         }
 
         private void CreateAccount(AccountCreated accountCreated, Func<T> creator)
@@ -66,9 +78,21 @@ namespace BankLibrary
             account.Created += accountCreated;
             _accounts.Add(account);
         }
-        private void CalculationPercent()
+
+        // я искал как добавить к ForEach параметры поисканужного элемнта
+        // при этом не использовать if, чисто методами "листа" но получилалось более громоздко
+        private void CalculationPercent(List<T> accounts)
         {
-            var percent =_accounts.FindAll(x => x == AccountState.Opened);
+            accounts.ForEach(x => PernissionToCredit(x));
         }
+
+        private void PernissionToCredit(T credit)
+        {
+            if(credit.Type == AccountType.Deposit && credit._state == AccountState.Opened)
+            {
+                credit.PaymentAmount();
+            }
+        }
+
     }
 }

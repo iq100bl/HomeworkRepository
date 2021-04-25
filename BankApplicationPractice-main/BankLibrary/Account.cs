@@ -3,15 +3,22 @@
 namespace BankLibrary
 {
     public delegate void AccountCreated(string message);
-    public delegate void AccountAction();
     
     public abstract class Account
     {
-        private static int _counter = 0;
+        private static int _counter;
         private decimal _amount;
-        private int _id;
+        private readonly int _id;
         private int _days = 0;
+        private readonly decimal rate = 0.5m;
+
+        public abstract AccountType Type { get; }
+
         internal AccountState _state { get; set; }
+
+        internal int Days => _days;
+
+        internal int Id => _id;
 
         public event AccountCreated Created;
 
@@ -27,7 +34,7 @@ namespace BankLibrary
             AssertValidState(AccountState.Created);
             _state = AccountState.Opened;
             IncrementDays();
-            Created?.Invoke("Account created.");
+            Created?.Invoke("Account created. On your account {_amount}");
         }
         
         public virtual void Close()
@@ -35,7 +42,7 @@ namespace BankLibrary
             AssertValidState(AccountState.Opened);
             _state = AccountState.Closed;
             IncrementDays();
-            Created?.Invoke("Account closed.");
+            Created?.Invoke("Account closed. On your account {_amount}");
         }
         
         public virtual void Put(decimal amount)
@@ -43,7 +50,7 @@ namespace BankLibrary
             AssertValidState(AccountState.Opened);
             _amount += amount;
             IncrementDays();
-            Created?.Invoke("Amount of money replenished.");
+            Created?.Invoke("Amount of money replenished. On your account {_amount}");
         }
         
         public virtual void Withdraw(decimal amount)
@@ -57,10 +64,17 @@ namespace BankLibrary
 
             _amount -= amount;
             IncrementDays();
-            Created?.Invoke($"You have withdrawn an amount of {amount}. on your account {_amount}");
+            Created?.Invoke($"You have withdrawn an amount of {amount}. On your account {_amount}");
         }
-        
-        public abstract AccountType Type { get; }
+
+        public void Skip() => IncrementDays();
+
+        public void IncrementDays() => _days++;
+
+        public void PaymentAmount()
+        {
+            _amount = (_amount * rate) + _amount;
+        }
 
         private void AssertValidState(AccountState validState)
         {
@@ -68,14 +82,6 @@ namespace BankLibrary
             {
                 throw new InvalidOperationException($"Invalid account state: {_state}");
             }
-        }
-
-        internal int Days => _days;
-        internal int Id => _id;
-
-        public void IncrementDays()
-        {
-            _days++;
         }
     }
 }
