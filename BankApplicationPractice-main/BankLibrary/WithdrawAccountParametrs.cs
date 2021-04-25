@@ -6,6 +6,6 @@
 
         public decimal Amount { get; set; }
 
-        public AccountCreated WithdrawAccount { get; set; }
+        public AccountStatus WithdrawAccount { get; set; }
     }
 }

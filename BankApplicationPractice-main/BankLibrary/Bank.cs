@@ -27,17 +27,26 @@ namespace BankLibrary
 
         public void ClosedAccount(ClosedAccountParameters parameters)
         {
-            ExecuteOnAccount(parameters.AccountCloser, parameters.Id, acc => acc.Close());          
+            ExecuteOnAccount(status =>
+            {
+                status.AccountCloser += parameters.AccountCloser;
+            }, parameters.Id, acc => acc.Close());          
         }       
 
         public void PutAmount(PutAccountParameters parameters)
         {
-            ExecuteOnAccount(parameters.PutAccount, parameters.Id, acc => acc.Put(parameters.Amount));
+            ExecuteOnAccount(status =>
+            {
+                status.PutAccount += parameters.PutAccount;
+            }, parameters.Id, acc => acc.Put(parameters.Amount));
         }
 
         public void WithdrawAccaunt(WithdrawAccountParametrs parameters)
         {
-            ExecuteOnAccount(parameters.WithdrawAccount, parameters.Id, acc => acc.Withdraw(parameters.Amount));
+            ExecuteOnAccount(status =>
+            {
+                status.WithdrawAccount += parameters.WithdrawAccount;
+            }, parameters.Id, acc => acc.Withdraw(parameters.Amount));
         }       
 
         public void SkipDay(SkipDayAccountParameters parametrs)
@@ -60,22 +69,22 @@ namespace BankLibrary
             }
         }
 
-        private void ExecuteOnAccount(AccountCreated accountCreated, int accountId, Action<T> action)
+        private void ExecuteOnAccount(Action<T> status, int accountId, Action<T> action)
         {
             AssertValidId(accountId);
             var account = _accounts[accountId];
             action(account);
-            account.Created += accountCreated;
+            status(account);
             _accounts.RemoveAt(accountId);
             _accounts.Insert(accountId, account);
             CalculationPercent(_accounts);
         }
 
-        private void CreateAccount(AccountCreated accountCreated, Func<T> creator)
+        private void CreateAccount(AccountStatus accountStatus, Func<T> creator)
         {
             var account = creator();
+            account.Created += accountStatus;
             account.Open();
-            account.Created += accountCreated;
             _accounts.Add(account);
         }
 

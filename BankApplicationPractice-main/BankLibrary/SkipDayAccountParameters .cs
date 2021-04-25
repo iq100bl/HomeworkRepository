@@ -2,7 +2,7 @@
 {
     public class SkipDayAccountParameters
     {
-        public AccountCreated SkipDay { get; set; }
+        public AccountStatus SkipDay { get; set; }
 
 
     }

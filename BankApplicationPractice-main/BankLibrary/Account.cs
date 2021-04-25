@@ -2,7 +2,7 @@
 
 namespace BankLibrary
 {
-    public delegate void AccountCreated(string message);
+    public delegate void AccountStatus(string message);
     
     public abstract class Account
     {
@@ -20,7 +20,10 @@ namespace BankLibrary
 
         internal int Id => _id;
 
-        public event AccountCreated Created;
+        public event AccountStatus Created;
+        public event AccountStatus WithdrawAccount;
+        public event AccountStatus PutAccount;
+        public event AccountStatus AccountCloser;
 
         public Account(decimal amount)
         {
