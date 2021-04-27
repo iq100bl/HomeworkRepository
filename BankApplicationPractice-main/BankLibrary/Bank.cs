@@ -92,15 +92,8 @@ namespace BankLibrary
         // при этом не использовать if, чисто методами "листа" но получилалось более громоздко
         private void CalculationPercent(List<T> accounts)
         {
-            accounts.ForEach(x => PernissionToCredit(x));
-        }
-
-        private void PernissionToCredit(T credit)
-        {
-            if(credit.Type == AccountType.Deposit && credit._state == AccountState.Opened)
-            {
-                credit.PaymentAmount();
-            }
+            accounts.Where(acc.Type == AccountType.Deposit && acc._state == AccountState.Opened)
+                .ForEach(x => x.PaymentAmount());
         }
 
     }
