@@ -22,8 +22,8 @@ namespace BankLibrary
 
         public event AccountStatus Created;
         public event AccountStatus WithdrawAccount;
-        public event AccountStatus PutAccount;
-        public event AccountStatus AccountCloser;
+        public event AccountStatus OnAmountAdded;
+        public event AccountStatus OnAccountClosed;
 
         public Account(decimal amount)
         {
@@ -45,7 +45,7 @@ namespace BankLibrary
             AssertValidState(AccountState.Opened);
             _state = AccountState.Closed;
             IncrementDays();
-            Created?.Invoke("Account closed. On your account {_amount}");
+            OnAccountClosed?.Invoke("Account closed. On your account {_amount}");
         }
         
         public virtual void Put(decimal amount)
@@ -53,7 +53,7 @@ namespace BankLibrary
             AssertValidState(AccountState.Opened);
             _amount += amount;
             IncrementDays();
-            Created?.Invoke("Amount of money replenished. On your account {_amount}");
+            OnAmountAdded?.Invoke("Amount of money replenished. On your account {_amount}");
         }
         
         public virtual void Withdraw(decimal amount)
@@ -67,14 +67,14 @@ namespace BankLibrary
 
             _amount -= amount;
             IncrementDays();
-            Created?.Invoke($"You have withdrawn an amount of {amount}. On your account {_amount}");
+            WithdrawAccount?.Invoke($"You have withdrawn an amount of {amount}. On your account {_amount}");
         }
 
         public void Skip() => IncrementDays();
 
         public void IncrementDays() => _days++;
 
-        public void PaymentAmount()
+        public void AccrualedAmount()
         {
             _amount = (_amount * rate) + _amount;
         }

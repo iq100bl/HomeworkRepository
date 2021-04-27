@@ -9,8 +9,9 @@ namespace BankLibrary
 
         public void OpenAccount(OpenAccountParameters parameters)
         {
-            if (GetType().GetGenericArguments()[0] == typeof(DepositAccount))
-            {if(parameters.Type == AccountType.OnDemand)
+            if (typeof(T) == typeof(DepositAccount))
+            {
+                if(parameters.Type == AccountType.OnDemand)
                 {
                     throw new InvalidOperationException("Sorry, this is a credit bank, you cannot create an on demand account");
                 }
@@ -27,38 +28,28 @@ namespace BankLibrary
 
         public void ClosedAccount(ClosedAccountParameters parameters)
         {
-            ExecuteOnAccount(status =>
-            {
-                status.AccountCloser += parameters.AccountCloser;
-            }, parameters.Id, acc => acc.Close());          
+            ExecuteOnAccount(parameters.Id, acc => acc.Close());          
         }       
 
         public void PutAmount(PutAccountParameters parameters)
         {
-            ExecuteOnAccount(status =>
-            {
-                status.PutAccount += parameters.PutAccount;
-            }, parameters.Id, acc => acc.Put(parameters.Amount));
+            ExecuteOnAccount(parameters.Id, acc => acc.Put(parameters.Amount));
         }
 
         public void WithdrawAccaunt(WithdrawAccountParametrs parameters)
         {
-            ExecuteOnAccount(status =>
-            {
-                status.WithdrawAccount += parameters.WithdrawAccount;
-            }, parameters.Id, acc => acc.Withdraw(parameters.Amount));
+            ExecuteOnAccount(parameters.Id, acc => acc.Withdraw(parameters.Amount));
         }       
 
         public void SkipDay(SkipDayAccountParameters parametrs)
         {
-            CalculationPercent(_accounts);
-            if (_accounts.Count< 0)
+            if (_accounts.Count < 0)
             {
                 throw new InvalidOperationException("Sorry, our bank has nothing to work with yet");
             }
+            CalculationPercent(_accounts);
             var acc = _accounts[0];
-            acc.Skip();
-            
+            acc.Skip();            
         }
 
         private void AssertValidId(int Id)
@@ -69,12 +60,11 @@ namespace BankLibrary
             }
         }
 
-        private void ExecuteOnAccount(Action<T> status, int accountId, Action<T> action)
+        private void ExecuteOnAccount(int accountId, Action<T> action)
         {
             AssertValidId(accountId);
             var account = _accounts[accountId];
             action(account);
-            status(account);
             _accounts.RemoveAt(accountId);
             _accounts.Insert(accountId, account);
             CalculationPercent(_accounts);
@@ -84,6 +74,9 @@ namespace BankLibrary
         {
             var account = creator();
             account.Created += accountStatus;
+            account.OnAccountClosed += accountStatus;
+            account.OnAmountAdded += accountStatus;
+            account.WithdrawAccount += accountStatus;
             account.Open();
             _accounts.Add(account);
         }
@@ -92,8 +85,15 @@ namespace BankLibrary
         // при этом не использовать if, чисто методами "листа" но получилалось более громоздко
         private void CalculationPercent(List<T> accounts)
         {
-            accounts.Where(acc.Type == AccountType.Deposit && acc._state == AccountState.Opened)
-                .ForEach(x => x.PaymentAmount());
+            accounts.ForEach(x => PernissionToCredit(x));
+        }
+
+        private void PernissionToCredit(T credit)
+        {
+            if (credit.Type == AccountType.Deposit && credit._state == AccountState.Opened)
+            {
+                credit.AccrualedAmount();
+            }
         }
 
     }
