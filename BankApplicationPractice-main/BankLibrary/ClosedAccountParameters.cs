@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
 
-        public AccountStatus AccountCloser { set; }
+        public AccountStatus AccountCloser { get; set; }
 
 
     }
