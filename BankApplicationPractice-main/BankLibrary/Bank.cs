@@ -5,51 +5,7 @@ namespace BankLibrary
 {
     public class Bank<T> where T : Account
     {
-        private const string KgkPassPhrase = "CleanUp";
         private readonly List<T> _accounts = new();
-        private readonly Dictionary<Locker, object> _lockers = new Dictionary<Locker, object>();
-
-        public void AddLocker(int id, string keyword, object data)
-        {
-            var locker = new Locker(id, keyword);
-            AddLockerOnDictionary(data, locker);
-        }
-
-        public void AddLocker(int id, string keyword, object data, string passwordOfCleanData)
-        {
-            var locker = new Locker(id, keyword, passwordOfCleanData);
-            AddLockerOnDictionary(data, locker);
-        }
-        public void SecretAction(string phrase)
-        {
-            if(phrase == KgkPassPhrase)
-            {
-                VisitKgk(phrase);
-            }
-            else
-            {
-                CleaningData(phrase);
-            }
-        }
-
-
-        public object GetLockerData(int id, string keyword)
-        {
-            foreach (KeyValuePair <Locker, object> locker in _lockers)
-            {
-                if(locker.Key.Matches(id, keyword))
-                {
-                    return $"Watch your data: {locker.Value}";
-                }               
-            }
-
-            throw new InvalidOperationException($"Cannot find locker with ID or keyword does not match");
-        }
-
-        public TU GetLockerData<TU>(int id, string keyword, Type view)
-        {
-            return (TU)GetLockerData(id, keyword);
-        }
 
         public void OpenAccount(OpenAccountParameters parameters)
         {
@@ -85,7 +41,7 @@ namespace BankLibrary
             ExecuteOnAccount(parameters.Id, acc => acc.Withdraw(parameters.Amount));
         }       
 
-        public void SkipDay()
+        public void SkipDay(SkipDayAccountParameters parametrs)
         {
             if (_accounts.Count < 0)
             {
@@ -93,31 +49,7 @@ namespace BankLibrary
             }
             CalculationPercent(_accounts);
             var acc = _accounts[0];
-            acc.Skip();
-        }
-        private void AddLockerOnDictionary(object data, Locker locker)
-        {
-            _lockers.Add(locker, data);
-        }
-        private void VisitKgk(string passPhrase)             // да да. подсмотрено. но уже посмотрев, не на нашёл уже способ, реализовать проще
-        {
-            if (passPhrase.Equals(KgkPassPhrase))
-            {
-                foreach (Locker key in _lockers.Keys)
-                {
-                    _lockers[key] = null;
-                }
-            }
-        }
-        private void CleaningData(string passwordOfCleanData)
-        {
-            foreach (KeyValuePair<Locker, object> locker in _lockers)
-            {
-                if (locker.Equals(passwordOfCleanData))
-                {
-                    _lockers[locker.Key] = null;
-                }
-            }
+            acc.Skip();            
         }
 
         private void AssertValidId(int Id)
@@ -149,6 +81,8 @@ namespace BankLibrary
             _accounts.Add(account);
         }
 
+        // я искал как добавить к ForEach параметры поисканужного элемнта
+        // при этом не использовать if, чисто методами "листа" но получилалось более громоздко
         private void CalculationPercent(List<T> accounts)
         {
             accounts.ForEach(x => PernissionToCredit(x));
