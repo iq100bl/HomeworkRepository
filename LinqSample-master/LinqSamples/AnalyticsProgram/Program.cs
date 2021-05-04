@@ -6,7 +6,7 @@ namespace AnalyticsProgram
     class Program
     {
         private static Database _db = new();
-        private static IRepository _repository = new Repository();
+        private static IRepository _repository = new Repository(_db);
         static void Main(string[] args)
         {
             bool alive = true;
@@ -31,15 +31,15 @@ namespace AnalyticsProgram
                         case 3:
                             GetAllProductsPurchased();
                             break;
-                        //case 4:
-                        //    GetUniqueProductsPurchased();
-                        //    break;
-                        //case 5:
-                        //    HasEverPurchasedProduct();
-                        //    break;
-                        //case 6:
-                        //    AreAllPurchasesHigherThan();
-                        //    break;
+                        case 4:
+                            GetUniqueProductsPurchased();
+                            break;
+                        case 5:
+                            HasEverPurchasedProduct();
+                            break;
+                        case 6:
+                            AreAllPurchasesHigherThan();
+                            break;
                         //case 7:
                         //    DidPurchaseAllProducts();
                         //    break;
@@ -57,12 +57,14 @@ namespace AnalyticsProgram
                 }
             }
         }
+
         private static void GetOrders()
         {
             Console.WriteLine("Enter customerId: ");
             int customerId = Convert.ToInt32(Console.ReadLine());
             _repository.GetOrders(customerId);
         }
+
         private static void GetOrder()
         {
             Console.WriteLine("Enter orderId: ");
@@ -75,34 +77,39 @@ namespace AnalyticsProgram
             int customerId = Convert.ToInt32(Console.ReadLine());
             Console.WriteLine($"{_repository.GetMoneySpentBy(customerId)}");
         }
+
         private static void GetAllProductsPurchased()
         {
             Console.WriteLine("Enter customerId: ");
             int customerId = Convert.ToInt32(Console.ReadLine());
             _repository.GetAllProductsPurchased(customerId);
         }
-        //private static void GetUniqueProductsPurchased()
-        //{
-        //    Console.WriteLine("Enter customerId: ");
-        //    int customerId = Convert.ToInt32(Console.ReadLine());
-        //    database.GetUniqueProductsPurchased(customerId);
-        //}
-        //private static void HasEverPurchasedProduct()
-        //{
-        //    Console.WriteLine("Enter customerId: ");
-        //    int customerId = Convert.ToInt32(Console.ReadLine());
-        //    Console.WriteLine("Enter productId: ");
-        //    int productId = Convert.ToInt32(Console.ReadLine());
-        //    database.HasEverPurchasedProduct(customerId, productId);
-        //}
-        //private static void AreAllPurchasesHigherThan()
-        //{
-        //    Console.WriteLine("Enter customerId: ");
-        //    int customerId = Convert.ToInt32(Console.ReadLine());
-        //    Console.WriteLine("Enter targetPrice: ");
-        //    decimal targetPrice = Convert.ToDecimal(Console.ReadLine());
-        //    Console.WriteLine($"{database.AreAllPurchasesHigherThan(customerId, targetPrice)}");
-        //}
+
+        private static void GetUniqueProductsPurchased()
+        {
+            Console.WriteLine("Enter customerId: ");
+            int customerId = Convert.ToInt32(Console.ReadLine());
+            _repository.GetUniqueProductsPurchased(customerId);
+        }
+
+        private static void HasEverPurchasedProduct()
+        {
+            Console.WriteLine("Enter customerId: ");
+            int customerId = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Enter productId: ");
+            int productId = Convert.ToInt32(Console.ReadLine());
+            _repository.HasEverPurchasedProduct(customerId, productId);
+        }
+
+        private static void AreAllPurchasesHigherThan()
+        {
+            Console.WriteLine("Enter customerId: ");
+            int customerId = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Enter targetPrice: ");
+            decimal targetPrice = Convert.ToDecimal(Console.ReadLine());
+            Console.WriteLine($"{_repository.AreAllPurchasesHigherThan(customerId, targetPrice)}");
+        }
+
         //private static void DidPurchaseAllProducts()
         //{
         //    Console.WriteLine("Enter customerId: ");

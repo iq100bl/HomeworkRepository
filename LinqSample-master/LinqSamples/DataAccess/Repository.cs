@@ -8,9 +8,19 @@ namespace AnalyticsAdapter
     {
         private readonly Database _db;
 
+        public Repository(Database db)
+        {
+            _db = db;
+        }
+
         public Order[] GetOrders(int customerId)  //получаем список покупок по id пользователя
         {
-            return _db.Orders.Where(order => order.CustomerId == customerId).ToArray();
+            var orders = _db.Orders.Where(order => order.CustomerId == customerId).ToArray();
+            if (orders == null)
+            {
+                throw new InvalidOperationException("Invalid id order");
+            }
+            return orders;
         }
 
         public Order GetOrder(int orderId) // получаем покупку по её id
@@ -22,6 +32,7 @@ namespace AnalyticsAdapter
             }
             return order;
         }
+
         public decimal GetMoneySpentBy(int customerId) //сумма денег, потраченая на покупки одним пользователем
         {
             return _db.Orders.Join(
@@ -35,23 +46,50 @@ namespace AnalyticsAdapter
                 }).Where(x => x.CustomerId == customerId)
                 .Sum(x => x.Price);
         }
-        public Product[] GetAllProductsPurchased(int customerId) //все купленые товары пользователя по id 
+
+        public Product[] GetAllProductsPurchased(int customerId) // все купленые товары покупателя по id
         {
-            var productPurchased = GetOrders(customerId)
-                .Join( _db.Products, a => a.ProductId, b => b.Id, (a, b) => b).Distinct()
-                 .ToArray();
-            if (productPurchased == null)
+            var allProductPurchased = GetOrders(customerId)
+               .Join(_db.Products, a => a.ProductId, b => b.Id, (a, b) => b)
+                .ToArray();
+            if (allProductPurchased == null)
             {
                 throw new InvalidOperationException("Invalid id customer");
             }
-            return productPurchased;
+            return allProductPurchased;
         }
-        public Product[] GetUniqueProductsPurchased(int customerId)
+
+        public Product[] GetUniqueProductsPurchased(int customerId) //все уникальные купленые товары пользователя по id 
+        {
+            var productPurchased = GetAllProductsPurchased(customerId).Distinct();
+            return (Product[])productPurchased;
+        }
+
+        public int GetTotalProductsPurchased(int productId) //колличество покупок по id покупателя
+        {
+            var totalProducts = GetOrders(productId).Count();
+            return totalProducts;
+        }
+
+        public bool HasEverPurchasedProduct(int customerId, int productId) //куплен ли продук покупателем. брал от уникальных покупок
+        {
+           var allProducts = GetUniqueProductsPurchased(customerId);
+            return allProducts.Any(productId => true);
+        }
+
+        public bool AreAllPurchasesHigherThan(int customerId, decimal targetPrice) //все ли товары, купленые покупателем, выше заданной цены 
         {
             return GetOrders(customerId)
-                .Join(_db.Products, (o) => o.ProductId, (p) => p.Id, (o, p) => p)
+                .Join(_db.Products, a => a.ProductId, b => b.Id, (a, b) => b)
+                .All(x => x.Price > targetPrice);
+        }
+
+        public bool DidPurchaseAllProducts(int customerId, params int[] productIds)
+        {
+            return GetOrders(customerId)
+                .Select(x => x.ProductId)
                 .Distinct()
-                .ToArray();
+                .Intersect(productIds).Count() == productIds.Count();
         }
     }
 }
