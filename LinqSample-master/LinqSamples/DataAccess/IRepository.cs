@@ -22,8 +22,8 @@ namespace AnalyticsAdapter
 
         bool DidPurchaseAllProducts(int customerId, params int[] productIds);
 
-    //    CustomerOverview GetCustomerOverview(int customerId);
+        CustomerOverview GetCustomerOverview(int customerId);
 
-    //    List<(string productName, int numberOfPurchases)> GetProductsPurchased(int customerId);
+        List<(string productName, int numberOfPurchases)> GetProductsPurchased(int customerId);
     }
 }

@@ -110,20 +110,20 @@ namespace AnalyticsProgram
             Console.WriteLine($"{_repository.AreAllPurchasesHigherThan(customerId, targetPrice)}");
         }
 
-        //private static void DidPurchaseAllProducts()
-        //{
-        //    Console.WriteLine("Enter customerId: ");
-        //    int customerId = Convert.ToInt32(Console.ReadLine());
-        //    Console.WriteLine("Enter size of array: ");
-        //    int size = Convert.ToInt32(Console.ReadLine());
-        //    int[] productIds = new int[size];
-        //    for (int i = 0; i < size; i++)
-        //    {
-        //        Console.WriteLine("Enter productId: ");
-        //        int productId = Convert.ToInt32(Console.ReadLine());
-        //        productIds[i] = productId;
-        //    }
-        //    Console.WriteLine($"{database.DidPurchaseAllProducts(customerId, productIds)}");
-        //}
+        private static void DidPurchaseAllProducts()
+        {
+            Console.WriteLine("Enter customerId: ");
+            int customerId = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Enter size of array: ");
+            int size = Convert.ToInt32(Console.ReadLine());
+            int[] productIds = new int[size];
+            for (int i = 0; i < size; i++)
+            {
+                Console.WriteLine("Enter productId: ");
+                int productId = Convert.ToInt32(Console.ReadLine());
+                productIds[i] = productId;
+            }
+            Console.WriteLine($"{_repository.DidPurchaseAllProducts(customerId, productIds)}");
+        }
     }
 }
