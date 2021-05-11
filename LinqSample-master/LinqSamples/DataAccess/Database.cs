@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
 namespace AnalyticsAdapter
-{
-    public class Database
+{    
+    public class Database :IDatabase
     {
         public List<Customer> Customers { get; set; } = new List<Customer>();
         public List<Order> Orders { get; set; } = new List<Order>();
@@ -16,6 +16,7 @@ namespace AnalyticsAdapter
                 new Customer(2, "John"),
                 new Customer(3, "Bob"),
                 new Customer(4, "Nick"),
+                new Customer(5, "Jack"),
             });
 
             Products.AddRange(new []

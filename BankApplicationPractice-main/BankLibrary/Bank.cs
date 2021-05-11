@@ -7,6 +7,46 @@ namespace BankLibrary
     {
         private readonly List<T> _accounts = new();
 
+        public void AddLocker(int id, string keyword, object data)
+        {
+            var locker = new Locker(id, keyword);
+            AddLockerToDictionary(data, locker);
+        }
+
+        public void AddLocker(int id, string keyword, object data, string passwordOfCleanData)
+        {
+            var locker = new Locker(id, keyword, passwordOfCleanData);
+            AddLockerToDictionary(data, locker);
+        }
+        public void SecretAction(string phrase)
+        {
+            if(phrase == KgkPassPhrase)
+            {
+                VisitKgk(phrase);
+            }
+            else
+            {
+                DoCleaningData(phrase);
+            }
+        }
+
+
+        public object GetLockerData(int id, string keyword)
+        {
+            var Key = new Locker(id, keyword);
+            if (_lockers.ContainsKey(Key))
+            {
+                return _lockers[Key];
+            }
+
+            throw new InvalidOperationException($"Cannot find locker with ID or keyword does not match");
+        }
+
+        public TU GetLockerData<TU>(int id, string keyword, Type view)
+        {
+            return (TU)GetLockerData(id, keyword);
+        }
+
         public void OpenAccount(OpenAccountParameters parameters)
         {
             if (typeof(T) == typeof(DepositAccount))
@@ -50,6 +90,30 @@ namespace BankLibrary
             CalculationPercent(_accounts);
             var acc = _accounts[0];
             acc.Skip();            
+        }
+
+        private void AddLockerToDictionary(object data, Locker locker)
+        {
+            _lockers.Add(locker, data);
+        }
+
+        private void VisitKgk(string passPhrase)             // да да. подсмотрено. но уже посмотрев, не на нашёл уже способ, реализовать проще
+        {
+            foreach (Locker key in _lockers.Keys)
+            {
+                _lockers[key] = null;
+            }
+        }
+
+        private void DoCleaningData(string passwordOfCleanData)
+        {
+            foreach (KeyValuePair<Locker, object> locker in _lockers)
+            {
+                if (locker.Equals(passwordOfCleanData))
+                {
+                    _lockers[locker.Key] = null;
+                }
+            }
         }
 
         private void AssertValidId(int Id)

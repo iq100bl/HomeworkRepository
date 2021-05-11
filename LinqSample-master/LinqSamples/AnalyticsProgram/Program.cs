@@ -5,8 +5,8 @@ namespace AnalyticsProgram
 {
     class Program
     {
-        private static Database _db = new();
-        private static IRepository _repository = new Repository(_db);
+        private static readonly Database _db = new();
+        private static readonly IRepository _repository = new Repository(_db);
         static void Main(string[] args)
         {
             bool alive = true;

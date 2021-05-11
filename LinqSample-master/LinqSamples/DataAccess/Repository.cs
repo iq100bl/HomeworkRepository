@@ -6,22 +6,51 @@ namespace AnalyticsAdapter
 {
     public class Repository : IRepository
     {
-        private readonly Database _db;
-        private CustomerOverview customerOverview;
+        private readonly IDatabase _db;
 
-        public Repository(Database db)
+        public Repository(IDatabase db)
         {
             _db = db;
+        }
+        public void AddCustomer(string name)
+        {
+            if (_db.Customers.Any(x => x.Name == name))
+            {
+                throw new InvalidOperationException("Customer with the same name already exists");
+            }
+            _db.Customers.Add(new Customer(_db.Customers.Count + 1, name));
+        }
+
+        public void AddOrders(int customerId, int productId) //я не понял построения логики, для вызова эксепшена из if. != || != по логике, но не работает
+        {
+            if (_db.Customers.Any(x => x.Id == customerId)
+                && _db.Products.Any(x => x.Id == productId))
+            {
+                _db.Orders.Add(new Order(_db.Orders.Count + 1, productId, customerId));
+            }
+            else
+            {
+                throw new InvalidOperationException("There is no such custom or product");
+            }
+        }
+
+        internal void AddProduct(string name, decimal price)
+        {
+            if(_db.Products.Any(x => x.Name == name))
+            {
+                throw new InvalidOperationException("A product with the same name already exists");
+            }
+            _db.Products.Add(new Product(_db.Products.Count + 1, name, price));
         }
 
         public Order[] GetOrders(int customerId)  
         {
-            var orders = _db.Orders.Where(order => order.CustomerId == customerId).ToArray();
+            var orders = _db.Orders.Where(order => order.CustomerId == customerId);
             if (orders == null)
             {
-                throw new InvalidOperationException("Invalid id order");
+                throw new InvalidOperationException("Invalid customer ID: {customerId}");
             }
-            return orders;
+            return orders.ToArray();
         }
 
         public Order GetOrder(int orderId) 
@@ -51,19 +80,19 @@ namespace AnalyticsAdapter
         public Product[] GetAllProductsPurchased(int customerId) 
         {
             var allProductPurchased = GetOrders(customerId)
-               .Join(_db.Products, a => a.ProductId, b => b.Id, (a, b) => b)
-                .ToArray();
+               .Join(_db.Products, a => a.ProductId, b => b.Id, (a, b) => b);
+
             if (allProductPurchased == null)
             {
                 throw new InvalidOperationException("Invalid id customer");
             }
-            return allProductPurchased;
+            return allProductPurchased.ToArray();
         }
 
         public Product[] GetUniqueProductsPurchased(int customerId) 
         {
             var productPurchased = GetAllProductsPurchased(customerId).Distinct();
-            return (Product[])productPurchased;
+            return productPurchased.ToArray();
         }
 
         public int GetTotalProductsPurchased(int productId) 
@@ -96,21 +125,19 @@ namespace AnalyticsAdapter
 
         public CustomerOverview GetCustomerOverview(int customerId)
         {
-            if (customerId > _db.Customers.Count() || customerId < 0)
-            {
-                throw new InvalidOperationException("Invalid Id customer");
-            }
+            var customerOverview = new CustomerOverview();
 
             customerOverview.Name = _db.Customers
-                .Where(customer => customer.Id == customerId).First().Name;
+                .Where(customer => customer.Id == customerId).Single().Name;
 
             customerOverview.TotalProductsPurchased =
                 GetAllProductsPurchased(customerId).Count();
 
             customerOverview.FavoriteProductName =
                 GetAllProductsPurchased(customerId)
-                .GroupBy(x => x.Name).
-                Select(favorite => new { Name = favorite.Key, Count = favorite.Count() })
+                .GroupBy(x => x.Name)
+                .Select(favorite => new { Name =
+                favorite.Key, Count = favorite.Count() })
                 .OrderByDescending(x => x.Count)
                 .Select(x => x.Name)
                 .First();
@@ -118,7 +145,8 @@ namespace AnalyticsAdapter
             customerOverview.MaxAmountSpentPerProducts =
                 GetAllProductsPurchased(customerId)
                 .GroupBy(x => x.Price)
-                .Select(maxAmount => new { Price = maxAmount.Key, Count = maxAmount.Count() })
+                .Select(maxAmount => new { Price =
+                maxAmount.Key, Count = maxAmount.Count() })
                 .Max(x => x.Price * x.Count);
 
             customerOverview.TotalMoneySpent =
@@ -131,11 +159,10 @@ namespace AnalyticsAdapter
 
         public List<(string productName, int numberOfPurchases)> GetProductsPurchased(int customerId)
         {
-            var x = GetAllProductsPurchased(customerId)
+            return GetAllProductsPurchased(customerId)
                 .GroupBy(x => x.Name).
-                Select(favorite => new { Name = favorite.Key, Count = favorite.Count() })
+                Select(favorite => (favorite.Key, favorite.Count() ))
                 .ToList();
-           return (List<(string productName, int numberOfPurchases)>)x.Cast<(string productName, int numberOfPurchases)>(); // только так нашёл. 
         }
     }
 }

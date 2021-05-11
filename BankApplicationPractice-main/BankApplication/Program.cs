@@ -120,10 +120,63 @@ namespace BankApplication
             // Close
         }
 
-        private static void SkipDay()
-        {
-            _bank.SkipDay(new SkipDayAccountParameters { });
+            switch (choice)
+            {
+                case 1:
+                    _bank.AddLocker(GetId() , GetKeyword(), GetData());
+                    break;
+                case 2:
+                    _bank.AddLocker(GetId(), GetKeyword(), GetData(), GetPassword());
+                    break;
+                case 3:
+                    _bank.GetLockerData(GetId(), GetKeyword());
+                    break;
+                case 4:                 
+                    // _bank.GetLockerData(id, keyword, data.GetType()); не понял как реализовать передачу вида 
+                    break;
+                case 5:
+                    SecretAction();
+                    break;
+                default:
+                    break;
+            }
         }
+
+        private static string GetPassword()
+        {
+            Console.WriteLine("Enter password: ");
+            var password = Console.ReadLine();
+            return password;
+        }
+
+        private static object GetData()
+        {
+            Console.WriteLine("Enter data: ");
+            var data = Console.ReadLine();
+            return data;
+        }
+
+        private static string GetKeyword()
+        {
+            Console.WriteLine("Enter keyword: ");
+            var keyword = Console.ReadLine();
+            return GetKeyword();
+        }
+
+        private static int GetId()
+        {
+            Console.WriteLine("Enter id: ");
+            var id = Convert.ToInt32(Console.ReadLine());
+            return id;
+        }
+
+        private static void SecretAction()
+        {
+            string phrase = Console.ReadLine();
+            _bank.SecretAction(phrase);
+        }
+
+        private static void SkipDay() => _bank.SkipDay();
 
         private static void NotifyAccountCreated(string message)
         {
