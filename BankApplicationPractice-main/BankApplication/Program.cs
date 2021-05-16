@@ -29,21 +29,18 @@ namespace BankApplication
                             OpenAccount();
                             break;
                         case 2:
-                            ActionLocker();
-                            break;
-                        case 3:
                             Withdraw();
                             break;
-                        case 4:
+                        case 3:
                             Put();
                             break;
-                        case 5:
+                        case 4:
                             CloseAccount();
                             break;
-                        case 6:
+                        case 5:
                             SkipDay();
                             break;
-                        case 7:
+                        case 6:
                             alive = false;
                             continue;
                     }
@@ -77,7 +74,6 @@ namespace BankApplication
             });
         }
 
-       
         private static void Withdraw()
         {
             Console.WriteLine("Specify the sum to withdraw from the account: ");
@@ -123,32 +119,19 @@ namespace BankApplication
             });
             // Close
         }
-        private static void ActionLocker()
-        {
-            Console.WriteLine("1.Open locker \t 2.Open locker with password on clear\t 3.Pick up locker\t 4. Pick up something\t 5. Secret action");
-            int choice = Convert.ToInt32(Console.ReadLine());
-
-            int id;
-            string keyword;
-            object data;
-            string password;
 
             switch (choice)
             {
                 case 1:
-                    DefiningParametersActionLoker(out id, out keyword, out data);
-                    _bank.AddLocker(id, keyword, data);
+                    _bank.AddLocker(GetId() , GetKeyword(), GetData());
                     break;
                 case 2:
-                    DefiningParametersActionLoker(out id, out keyword, out data, out password);
-                    _bank.AddLocker(id, keyword, data, password);
+                    _bank.AddLocker(GetId(), GetKeyword(), GetData(), GetPassword());
                     break;
                 case 3:
-                    DefiningParametersActionLoker(out id, out keyword);
-                    _bank.GetLockerData(id, keyword);
+                    _bank.GetLockerData(GetId(), GetKeyword());
                     break;
-                case 4:
-                    DefiningParametersActionLoker(out id, out keyword, out data);
+                case 4:                 
                     // _bank.GetLockerData(id, keyword, data.GetType()); не понял как реализовать передачу вида 
                     break;
                 case 5:
@@ -159,43 +142,39 @@ namespace BankApplication
             }
         }
 
+        private static string GetPassword()
+        {
+            Console.WriteLine("Enter password: ");
+            var password = Console.ReadLine();
+            return password;
+        }
+
+        private static object GetData()
+        {
+            Console.WriteLine("Enter data: ");
+            var data = Console.ReadLine();
+            return data;
+        }
+
+        private static string GetKeyword()
+        {
+            Console.WriteLine("Enter keyword: ");
+            var keyword = Console.ReadLine();
+            return GetKeyword();
+        }
+
+        private static int GetId()
+        {
+            Console.WriteLine("Enter id: ");
+            var id = Convert.ToInt32(Console.ReadLine());
+            return id;
+        }
+
         private static void SecretAction()
         {
             string phrase = Console.ReadLine();
             _bank.SecretAction(phrase);
         }
-
-        private static void DefiningParametersActionLoker(out int id, out string keyword, out object data)
-        {
-            Console.WriteLine("Enter id: ");
-            id = Convert.ToInt32(Console.ReadLine());
-            Console.WriteLine("Enter keyword: ");
-            keyword = Console.ReadLine();
-            Console.WriteLine("Enter data: ");
-            data = Console.ReadLine();
-        }
-
-        private static void DefiningParametersActionLoker(out int id, out string keyword, out object data, out string password)
-        {
-            Console.WriteLine("Enter id: ");
-            id = Convert.ToInt32(Console.ReadLine());
-            Console.WriteLine("Enter keyword: ");
-            keyword = Console.ReadLine();
-            Console.WriteLine("Enter data: ");
-            data = Console.ReadLine();
-            Console.WriteLine("Enter password: ");
-            password = Console.ReadLine();
-        }
-
-        private static void DefiningParametersActionLoker(out int id, out string keyword)
-        {
-            Console.WriteLine("Enter id: ");
-            id = Convert.ToInt32(Console.ReadLine());
-            Console.WriteLine("Enter keyword: ");
-            keyword = Console.ReadLine();
-            Console.WriteLine("Enter data: ");
-        }
-
 
         private static void SkipDay() => _bank.SkipDay();
 
