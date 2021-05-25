@@ -1,0 +1,2 @@
+(One-time File Write Event occurred in {0:HH:mm:ss.fff}, 18.05.2021 20:03:25)
+(One-time File Write Event occurred in {0:HH:mm:ss.fff}, 18.05.2021 20:05:32)

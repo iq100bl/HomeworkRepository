@@ -1,0 +1,4 @@
+(File write event was raised at {0:HH:mm:ss.fff}, 18.05.2021 20:03:25)
+(File write event was raised at {0:HH:mm:ss.fff}, 18.05.2021 20:03:27)
+(File write event was raised at {0:HH:mm:ss.fff}, 18.05.2021 20:05:32)
+(File write event was raised at {0:HH:mm:ss.fff}, 18.05.2021 20:05:34)
