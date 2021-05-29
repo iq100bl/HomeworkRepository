@@ -1,46 +1,27 @@
 ﻿using System;
-using AnaliticProgram;
+using System.Threading;
+using System.Threading.Tasks;
+using IJobsService;
 
 public class JobSchdeduler // я реализовывал с множественными таймерами, так же парралельно попробую сделать с одним. но буду уже мучать свою реализацию
 {
-    private static readonly IJobs _jobs = new Jobs();   
-
+    private static readonly IJobs _jobs = new Jobs();
     public static void Main()
     {
-        _jobs.StartTaskLoggingTime();
-
-        _jobs.StartTaskLoggingToFile();
-
-        _jobs.StartTaskRecordingWebsite();
-
-        _jobs.StartTaskLoggingToFileOnce();
-
-        _jobs.StartCalculatingFibonacciNumbersAfterTime();
-
-
         while (true)
         {
-            Console.WriteLine("Введите Y для отмены операции или другой символ для ее продолжения:");
-            string s = Console.ReadLine();
-            switch (s)
+            int Startstop = Convert.ToInt32(Console.ReadLine());
+            if (Startstop == 1)
             {
-                case "1":
-                    _jobs.StopTaskLoggingTime();
-                    break;
-                case "2":
-                    _jobs.StopTaskLoggingToFile();
-                    break;
-                case "3":
-                    _jobs.StopTaskRecordingWebsite();
-                    break;
-                case "4":
-                    _jobs.StopCalculatingFibonacciNumbersAfterTime();
-                    break;
+                int id = Convert.ToInt32(Console.ReadLine());
+                Task.Run(() => _jobs.StartJob(id));
             }
-
+            else if (Startstop == 2)
+            {
+                int id = Convert.ToInt32(Console.ReadLine());
+                _jobs.StopJob(id);
+            }
         }
-
-        Console.ReadKey();
     }
 }
 
