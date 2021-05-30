@@ -9,7 +9,7 @@ namespace Currencises.Entities
 {
     public class CurrencyRate
     {
-        private readonly DateTime denomination = new DateTime(2016, 6, 30);
+        private readonly DateTime denominationDate  = new DateTime(2016, 6, 30);
 
         [JsonProperty("Cur_ID")]
         public int Id { get; set; }
@@ -32,7 +32,7 @@ namespace Currencises.Entities
 
         public override string ToString()
         {
-            if(date < denomination)
+            if(date < denominationDate )
             {
                 return $"{Scale} {Abbreviation} = {Rate} BYN. There was a denomination\n 1 BYN = {Scale / Rate} {Abbreviation} ";
             }

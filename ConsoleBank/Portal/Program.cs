@@ -11,10 +11,10 @@ namespace Portal
             var api = new CurrencisesApi();
             var currencies = await api.GetCurrencises();
 
-            //foreach (var currency in currencies)
-            //{
-            //    Console.WriteLine(currency);
-            //}
+            foreach (var currency in currencies)
+            {
+                Console.WriteLine(currency);
+            }
 
             Console.WriteLine(await api.GetCurrencyRate(298));
 

@@ -13,16 +13,16 @@ namespace Currencises
         private const string CurrencyRatesApiUrl = "https://www.nbrb.by/api/exrates/rates";
         private const string CurrenciesApiUrl = "https://www.nbrb.by/api/exrates/currencies";
 
-    public Task<Currency[]> GetCurrencises()
+        public Task<Currency[]> GetCurrencises()
         {
-            return CallApi(() => CurrenciesApiUrl.GetJsonAsync<Currency[]>());            
+            return CallApi(() => CurrenciesApiUrl.GetJsonAsync<Currency[]>());
         }
 
         public Task<CurrencyRate> GetCurrencyRate(int currencyId)
         {
             return CallApi(() => CurrencyRatesApiUrl
                     .AppendPathSegment(currencyId)
-                    .GetJsonAsync<CurrencyRate>());          
+                    .GetJsonAsync<CurrencyRate>());
         }
 
         public async Task<CurrencyRate[]> GetRates(string[] abbreviationsСurrencies)
