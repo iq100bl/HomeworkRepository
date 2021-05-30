@@ -13,17 +13,24 @@ namespace Portal
 
             //foreach (var currency in currencies)
             //{
-                //Console.WriteLine(currency);
+            //    Console.WriteLine(currency);
             //}
 
-            //var rate = await api.GetCurrencyRate(298);
-           // Console.WriteLine(rate);
+            Console.WriteLine(await api.GetCurrencyRate(298));
 
-            string[] abbreviation = { "RUB", "EUR", "UAH", "USD", "PLN" };
-            var rates = await api.GetRates(abbreviation);
-            foreach(var x in rates)
+            string[] abbreviationСurrencies = { "RUB", "EUR", "UAH", "USD", "PLN" };
+            var rates = await api.GetRates(abbreviationСurrencies);
+            foreach (var rate in rates)
             {
-                Console.WriteLine(x);
+                Console.WriteLine(rate);
+            }
+
+
+        var date = new DateTime(2014, 7, 6);
+            var exchangeRateTimeDependent = await api.ExchangeRateTimeDependent(date, abbreviationСurrencies);
+            foreach (var rate in exchangeRateTimeDependent)
+            {
+                Console.WriteLine(rate);
             }
         }
     }

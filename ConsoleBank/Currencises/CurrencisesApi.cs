@@ -12,10 +12,8 @@ namespace Currencises
     {
         private const string CurrencyRatesApiUrl = "https://www.nbrb.by/api/exrates/rates";
         private const string CurrenciesApiUrl = "https://www.nbrb.by/api/exrates/currencies";
-        private readonly string[] abbreviation = { "RUB", "EUR", "UAH", "USD", "PLN" };
-        private DateTime denomination = new DateTime(2016,06,30);
 
-        public Task<Currency[]> GetCurrencises()
+    public Task<Currency[]> GetCurrencises()
         {
             return CallApi(() => CurrenciesApiUrl.GetJsonAsync<Currency[]>());            
         }
@@ -27,20 +25,42 @@ namespace Currencises
                     .GetJsonAsync<CurrencyRate>());          
         }
 
-        public async Task<CurrencyRate[]> GetRates(string[] abbreviation)
+        public async Task<CurrencyRate[]> GetRates(string[] abbreviationsСurrencies)
         {
-            var x = await GetCurrencises();
-            var y = new CurrencyRate[5];
+            var currencyes = await GetCurrencises();
+            var currencyRates = new CurrencyRate[abbreviationsСurrencies.Length];
             var i = 0;
-            foreach (var name in abbreviation)
+            foreach (var name in abbreviationsСurrencies)
             {
-               var rates = x.Where(x => x.Abbriviation == name).Where(x => x.DateStart <= DateTime.Now && x.DateEnd >= DateTime.Now).Select(x => x.Id).FirstOrDefault();
-               y[i] = await GetCurrencyRate(rates); 
-               i += 1;
+                var rates = currencyes.Where(x => x.Abbriviation == name)
+                    .Where(x => x.DateStart <= DateTime.Now && x.DateEnd >= DateTime.Now)
+                    .Select(x => x.Id)
+                    .FirstOrDefault();
+                currencyRates[i] = await GetCurrencyRate(rates);
+                i += 1;
             }
-            return y;
+            return currencyRates;
         }
 
+        public async Task<CurrencyRate[]> ExchangeRateTimeDependent(DateTime date, string[] abbreviationsСurrencies)
+        {
+            var currencyRates = await GetCurrencyRates(date);
+            var currency = new CurrencyRate[abbreviationsСurrencies.Length];
+            var i = 0;
+            foreach (var name in abbreviationsСurrencies)
+            {
+                currency[i] = currencyRates.Where(x => x.Abbreviation == name).FirstOrDefault();
+                i += 1;
+            }
+            return currency;
+        }
+
+        private Task<CurrencyRate[]> GetCurrencyRates(DateTime date)
+        {
+            var text = CurrencyRatesApiUrl + "?ondate=" + date.ToString("yyyy-M-d") + "&periodicity=0";
+            return CallApi(() => text
+            .GetJsonAsync<CurrencyRate[]>());
+        }
         private static async Task<T> CallApi<T>(Func<Task<T>> func)
         {
             try

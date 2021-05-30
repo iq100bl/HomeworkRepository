@@ -31,5 +31,6 @@ namespace Currencises
         {
             return $"{Id} - {Code} - {Abbriviation} - {Name}";
         }
+
     }
 }
