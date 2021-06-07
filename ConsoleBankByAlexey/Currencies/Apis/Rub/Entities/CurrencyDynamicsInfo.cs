@@ -1,10 +1,13 @@
-using System;
+﻿using System;
 using System.Xml.Serialization;
 
 namespace Currencies.Apis.Rub.Entities
 {
     public class CurrencyDynamicsInfo
     {
+        [XmlAttribute("Id")]
+        public string Id { get; set; }
+
         [XmlElement("Date", DataType="date")]
         public DateTime Date { get; set; }
 

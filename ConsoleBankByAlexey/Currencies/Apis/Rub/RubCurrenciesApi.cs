@@ -48,7 +48,7 @@ namespace Currencies.Apis.Rub
             };
         }
 
-        public async Task<CurrencyDynamicsInfo[]> GetDynamics(string charCode, DateTime start, DateTime end)
+        public async Task<CurrencyRateModel[]> GetDynamics(string charCode, DateTime start, DateTime end)
         {
             var currencies = await GetCurrencies();
             var id = currencies.Single(x => x.CharCode == charCode).Id;
@@ -61,7 +61,14 @@ namespace Currencies.Apis.Rub
             }).GetStringAsync());
 
             var response = XmlUtils.ParseXml<CurrencyDynamicsResponse>(xmlResponse);
-            return response.Items.Select(x => new CurrencyDynamicsInfo { Date = x.Date, Nominal = x.Nominal, Rate = x.Rate }).ToArray();
+
+            return response.Items.Select(x => new CurrencyRateModel {
+                CharCode = charCode,
+                Date = x.Date, Id = x.Id,
+                Name = currencies.Single(x => x.CharCode == charCode).Name,
+                Nominal = x.Nominal,
+                Rate = x.Rate
+            }).ToArray();
         }
 
         // TODO: base class?
@@ -75,6 +82,6 @@ namespace Currencies.Apis.Rub
             {
                 throw new CurrencyNotAvailableException("Currency not available");
             }
-        }
+        }       
     }
 }

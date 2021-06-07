@@ -45,6 +45,8 @@ namespace Currencies.Common.Caching
                 {
                     return await GetNewCurrencyRate(charCode, onDate);
                 }
+
+                return rate;
             }
 
             return await GetNewCurrencyRate(charCode, onDate);
@@ -53,27 +55,26 @@ namespace Currencies.Common.Caching
         public async Task<CurrencyRateModel[]> GetDynamics(string charCode, DateTime start, DateTime end)
         {
             // TODO: add cache if possible?\
-            var currencies = GetCurrencies();
-            var rates = _currenciesApi.GetDynamics(charCode, start, end);
-            var currencyRate = new CurrencyRateModel[(int)(end - start).TotalDays];
+            var currencies = await GetCurrencies();
+            var dynamicRates = new CurrencyRateModel[(int)(end - start).TotalDays];
             var key = start;
-            for (var i = 0; i <= currencyRate.Length; i++)
+            for (var i = 0; i <= dynamicRates.Length; i++)
             {
-                if (_ratesCache.ContainsKey(GetKey(key)))
+                if (_ratesCache.ContainsKey(GetKey(key)) == null
+                    || _ratesCache.ContainsKey(GetKey(key.AddDays(1))) == null
+                    || _ratesCache.ContainsKey(GetKey(key.AddDays(2))) == null
+                    || _ratesCache.ContainsKey(GetKey(key.AddDays(3))) == null)
                 {
-                    currencyRate[i] = _ratesCache[GetKey(key)].SingleOrDefault(x => x.CharCode == charCode);
-                    var rate = _ratesCache[GetKey(key)].SingleOrDefault(x => x.CharCode == charCode);
-                    if (rate == null)
-                    {
-                        ;
-                    }
-                    else
-                    {
-                        currencyRate[i] = rate;
-                    }
+                    return await GetNewCurrenciesDynamics(charCode, start, end);
+                }
+
+                else
+                {
+                    dynamicRates[i] = _ratesCache[GetKey(key)].SingleOrDefault(x => x.CharCode == charCode);
+                    key = key.AddDays(1);
                 }
             }
-            return await _currenciesApi.GetDynamics(charCode, start, end);
+            return dynamicRates;
         }
 
         private void AddToCache(string key, CurrencyRateModel rate)
@@ -93,6 +94,15 @@ namespace Currencies.Common.Caching
         {
             var newRate = await _currenciesApi.GetCurrencyRate(currencyAbbreviation, onDate);
             return AddToCache(newRate, onDate);
+        }
+        private async Task<CurrencyRateModel[]> GetNewCurrenciesDynamics(string charCode, DateTime start, DateTime end)
+        {
+            var newCurrenciesDynamics = await _currenciesApi.GetDynamics(charCode, start, end);
+            foreach (var key in newCurrenciesDynamics.Select(x => x.Date))
+            {
+                AddToCache(newCurrenciesDynamics.Where(x => x.Date == key).SingleOrDefault(), key);
+            }
+            return newCurrenciesDynamics;
         }
 
         private CurrencyRateModel AddToCache(CurrencyRateModel rate, DateTime? onDate = null)
