@@ -13,7 +13,10 @@ namespace IJobsService
         private static readonly CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
         private readonly CancellationToken token = cancelTokenSource.Token;
         private readonly Dictionary<int, System.Timers.Timer> _timers = new Dictionary<int, System.Timers.Timer>();
+<<<<<<< 01e442c8f2c436a3f92c4b334942f5ba1386bd86
         private int id;
+=======
+>>>>>>> Auto stash before rebase of "origin/jobScheduler"
 
         public async Task StartJob(int jobId)
         {
@@ -71,9 +74,14 @@ namespace IJobsService
                     throw new InvalidOperationException("there is no such job");
             }
 
+<<<<<<< 01e442c8f2c436a3f92c4b334942f5ba1386bd86
             _timers.Add(id,aTimer);
             StartTimer(aTimer, paramReset, paramEnable, paramDelayStart);
             id += 1;
+=======
+            _timers.Add(jobId, aTimer);
+            StartTimer(aTimer, paramReset, paramEnable, paramDelayStart);
+>>>>>>> Auto stash before rebase of "origin/jobScheduler"
         }
 
         //private async void ChoiceJob(int jobId)
@@ -98,10 +106,18 @@ namespace IJobsService
 
         public void StopJob(int jobId)
         {
+<<<<<<< 01e442c8f2c436a3f92c4b334942f5ba1386bd86
             
             _timers[jobId].Stop();
 
             cancelTokenSource.Cancel();
+=======
+            _timers[jobId].Stop();
+            if (jobId == 5)
+            {
+                cancelTokenSource.Cancel();
+            }
+>>>>>>> Auto stash before rebase of "origin/jobScheduler"
         }
 
         private static void OnTimedEvent(object source, ElapsedEventArgs e)
