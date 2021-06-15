@@ -9,8 +9,10 @@ using Flurl.Http;
 
 namespace Currencies.Apis.Byn
 {
+    // TODO cover by tests https://flurl.dev/docs/testable-http/
     public class BynCurrenciesApi : ICurrenciesApi
     {
+        // TODO BYN
         private const string BaseApiUrl = "https://www.nbrb.by/api/exrates";
         private readonly string _currencyRatesDynamicsApiUrl = $"{BaseApiUrl}/rates/dynamics";
         private readonly string _currencyRatesApiUrl = $"{BaseApiUrl}/rates";
@@ -29,6 +31,19 @@ namespace Currencies.Apis.Byn
 
         public async Task<CurrencyRateModel> GetCurrencyRate(string charCode, DateTime? onDate)
         {
+            if (charCode == "BYN")
+            {
+                return new CurrencyRateModel
+                {
+                    Date = DateTime.Today,
+                    Id = "0",
+                    Name = "BYN",
+                    Nominal = 1,
+                    Rate = 1,
+                    CharCode = "BYN"
+                };
+            }
+
             var result = _currencyRatesApiUrl
                 .AppendPathSegment(charCode)
                 .SetQueryParams(new
