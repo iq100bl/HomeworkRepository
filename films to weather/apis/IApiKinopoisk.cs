@@ -7,7 +7,9 @@ namespace films_to_weather
     public interface IApiKinopoisk
     {
         Task<FilmModel[]> GetTopFilms(int _page);
+
         Task<FiltersModelResponse> GetFilters();
-        Task<WeatherResponse> GetWeather();
+
+        Task<FilmModel[]> SearchFilmByFilter(int[] genres);
     }
 }

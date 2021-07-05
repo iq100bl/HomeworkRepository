@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.31402.337
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "films to weather", "films to weather.csproj", "{747953FD-C340-4D76-A55F-5FD281CE5991}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramBotFilmsToWeather", "..\TelegramBotFilmsToWeather\TelegramBotFilmsToWeather.csproj", "{ED21894E-8E24-4F0C-A404-FC7457C4E312}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramBotFilmsToWeather", "..\TelegramBotFilmsToWeather\TelegramBotFilmsToWeather.csproj", "{ED21894E-8E24-4F0C-A404-FC7457C4E312}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

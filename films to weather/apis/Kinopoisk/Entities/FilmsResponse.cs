@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace films_to_weather.Apis.Entities
 {
-    public class FilmTopResponse
+    public class FilmsResponse
     {
         [JsonProperty("films")]
         public FilmModelResponse[] FilmTopResponse_Films;

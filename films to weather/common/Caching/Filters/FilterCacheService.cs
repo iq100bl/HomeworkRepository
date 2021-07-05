@@ -10,11 +10,36 @@ namespace films_to_weather.Common.Caching
 {
     public class FilterCasheService : IFilterCasheService
     {
-        private static readonly Dictionary<int, string> countries = new();
-        private static readonly Dictionary<int, string> genres = new();
+        private static readonly Dictionary<string, int> countries = new();
+        private static readonly Dictionary<string, int> genres = new();
         private readonly IApiKinopoisk _apiKinopoisk = new ApiKinopoisk();
 
-        public async Task CachingFiltersAsync()
+        public async Task<Dictionary<string, int>> GetFilterDictionary(string type)
+        {
+            if (type == "countries")
+            {
+                if(countries == null)
+                {
+                    await CachingFiltersAsync();
+                }
+                return countries;
+            }
+
+            else if (type == "genres")
+            {
+                if (genres == null)
+                {
+                    await CachingFiltersAsync();
+                }
+                return genres;
+            }
+            else
+            {
+                throw new InvalidOperationException("Wrong filter type dictionary");
+            }
+        }
+
+        private async Task CachingFiltersAsync()
         {
             var filters = await _apiKinopoisk.GetFilters();
 
@@ -26,12 +51,12 @@ namespace films_to_weather.Common.Caching
 
             foreach (var country in filters.Countries)
             {
-                countries.Add(country.CountryId, country.Country);
+                countries.Add(country.Country, country.CountryId);
             }
 
             foreach (var genre in filters.Genres)
             {
-                genres.Add(genre.GenreId, genre.Genre);
+                genres.Add(genre.Genre, genre.GenreId);
             }
         }
     }
