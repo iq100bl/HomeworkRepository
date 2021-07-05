@@ -63,7 +63,7 @@ namespace Portal
                 Console.WriteLine($"Operation: {operation.AccountId} - {operation.Type} - {operation.Amount}");
             }
 
-            // await RunInfo();
+            await RunInfo();
             Console.WriteLine(Guid.NewGuid());
             Console.ReadLine();
         }
@@ -82,10 +82,10 @@ namespace Portal
             Console.WriteLine($"USD rate: {usdRate}");
             Console.WriteLine($"EUR rate: {eurRate}");
 
-            // var result1 = await _infoService.ConvertFrom(100, "USD");
-            // Console.WriteLine("1: " + result1);
-            // var result2 = await _infoService.ConvertTo(1000, "RUB");
-            // Console.WriteLine("2: " + result2);
+            var result1 = await _infoService.ConvertFromLocal(100, "USD");
+            Console.WriteLine("1: " + result1);
+            var result2 = await _infoService.ConvertToLocal(1000, "RUB");
+            Console.WriteLine("2: " + result2);
 
             var avg = await _infoService.GetAvgRate("USD", new DateTime(2020, 1, 1), new DateTime(2020, 12, 31));
             var min = await _infoService.GetMinRate("USD", new DateTime(2020, 1, 1), new DateTime(2020, 12, 31));
